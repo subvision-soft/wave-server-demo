@@ -1,10 +1,10 @@
-package fr.wave.serverdemo;
+package fr.wave.remotedemo;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class WaveServerDemoApplicationTests {
+class WaveRemoteDemoApplicationTests {
 
     @Test
     void contextLoads() {
