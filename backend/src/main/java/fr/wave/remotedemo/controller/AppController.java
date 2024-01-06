@@ -1,8 +1,11 @@
 package fr.wave.remotedemo.controller;
 
+import fr.wave.remotedemo.AppConfig;
 import fr.wave.remotedemo.model.EndpointsModel;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,24 +17,25 @@ import java.net.UnknownHostException;
 @RestController
 @CrossOrigin
 @RequestMapping("/")
+@RequiredArgsConstructor
 public class AppController {
-    @RequestMapping("/isAlive")
+
+    private final AppConfig appConfig;
+    @GetMapping("${app.endpoints.is-alive}")
     public ResponseEntity<String> isAlive() {
         return ResponseEntity.ok("Server is alive");
     }
 
-    @RequestMapping("/endpoints")
-    public ResponseEntity<EndpointsModel> getEndpoints() throws UnknownHostException {
-        return ResponseEntity.ok(getEndpointsModel());
+    @GetMapping("/name")
+    public ResponseEntity<String> getCompetitionName() {
+        return ResponseEntity.ok("Remote Demo");
     }
 
-    private EndpointsModel getEndpointsModel() throws UnknownHostException {
-        try (final DatagramSocket socket = new DatagramSocket()) {
-            socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
-            String ip = socket.getLocalAddress().getHostAddress();
-            return EndpointsModel.builder().HOST(ip).build();
-        } catch (SocketException e) {
-            throw new RuntimeException(e);
-        }
+
+    @GetMapping("/endpoints")
+    public ResponseEntity<EndpointsModel> getEndpoints() {
+        return ResponseEntity.ok( this.appConfig.getEndpointsModel());
     }
+
+
 }

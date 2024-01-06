@@ -1,0 +1,10 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+app:
+  endpoints:
+    post-target: /target
+    get-competitors: /competitors
+    is-alive: /is-alive
+    get-name: /name

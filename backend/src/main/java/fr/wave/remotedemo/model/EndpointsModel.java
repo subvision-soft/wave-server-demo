@@ -1,25 +1,22 @@
 package fr.wave.remotedemo.model;
 
 import lombok.Builder;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.Getter;
 
 @Builder
+@Getter
 public class EndpointsModel {
-    private String HOST;
 
-    @Value("${server.port}")
-    private String PORT;
+    private final String host;
+    private String port;
 
-    @Value("${app.endpoints.postTarget}")
-    private String POST_TARGET;
+    private String postTarget;
 
+    private String getCompetitors;
 
-    @Value("${app.endpoints.getCompetitors}")
-    private String GET_COMPETITORS;
+    private String isAlive;
 
-    @Value("${app.endpoints.isAlive}")
-    private String IS_ALIVE;
+    private String getCompetitionName;
 
-    @Value("${app.endpoints.getCompetitionName}")
-    private String GET_COMPETITION_NAME;
+    private String contextPath;
 }
