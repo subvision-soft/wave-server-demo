@@ -1,18 +1,28 @@
 import './App.css'
 import {useEffect, useState} from "react";
 import logo from "./assets/wave.svg";
-import { HomeOutlined, PlusOutlined, UserOutlined,TeamOutlined,AimOutlined,MenuFoldOutlined,MenuUnfoldOutlined} from "@ant-design/icons";
+import {
+    AimOutlined,
+    HomeOutlined,
+    MenuFoldOutlined,
+    MenuUnfoldOutlined,
+    PlusOutlined,
+    TeamOutlined,
+    UserOutlined
+} from "@ant-design/icons";
 import {Routes} from "react-router-dom";
 
-import {Button, Layout, Menu, Select, Space,Modal} from "antd";
+import {Button, DatePicker, Form, Input, Layout, Menu, Modal, Select, Space} from "antd";
 import {utils} from "./utils/_helper.tsx";
-import {getCompetitions} from "./utils/requests.tsx";
+import {createCompetition, getCompetitions} from "./utils/requests.tsx";
 
 function App() {
 
-    const [collapsed,setCollapsed] = useState(false);
-    const [competitions,setCompetitions] = useState([]);
+    const [collapsed, setCollapsed] = useState(false);
+    const [competitions, setCompetitions] = useState<any[]>([]);
     const [openCompetitionModal, setOpenCompetitionModal] = useState(false);
+    const [form] = Form.useForm();
+
     useEffect(() => {
         getCompetitions().then((res) => {
             let competitions = res.data.map((competition: { name: any; date: any; id: any; }) => {
@@ -30,8 +40,6 @@ function App() {
     }, [location]);
 
     const [selectedKey, setSelectedKey] = useState("0");
-
-
 
 
     const items = [
@@ -52,23 +60,67 @@ function App() {
             url: "/teams",
             icon: <TeamOutlined/>,
             label: "Equipes de relais",
-        },        {
+        }, {
             key: "4",
             url: "/targets",
-            icon: <AimOutlined />,
+            icon: <AimOutlined/>,
             label: "Cibles",
         },
     ];
 
+
+    const handleFinish = (values: any) => {
+        form.validateFields().then(() => {
+                createCompetition(values).then((res) => {
+                        setOpenCompetitionModal(false);
+                        form.resetFields();
+                        let competition = res.data;
+                        setCompetitions([...competitions, {
+                            label: `${competition.name} (${competition.date})`,
+                            value: competition.id,
+                        }])
+                    }
+                );
+            }
+        );
+    }
+
     return (
         <>
-            <Modal open={openCompetitionModal} onOk={
-                () => {
-                    setOpenCompetitionModal(false)
-                }
+            <Modal centered={true}
+                   open={openCompetitionModal} onOk={
+                form.submit
             } onCancel={() => {
                 setOpenCompetitionModal(false)
             }}>
+
+                <Form onFinish={
+                    handleFinish
+                } form={form}>
+                    <Form.Item label={"Nom"} name={"name"} rules={
+                        [
+                            {
+                                required: true,
+                                message: "Veuillez saisir un nom"
+                            }
+                        ]
+                    }>
+                        <Input></Input>
+                    </Form.Item>
+                    <Form.Item label={"Date"} name={"date"} rules={
+                        [
+                            {
+                                required: true,
+                                message: "Veuillez saisir une date"
+                            }
+                        ]
+                    }>
+                        <DatePicker format={"DD/MM/YYYY"}></DatePicker>
+                    </Form.Item>
+                    <Form.Item label={"Description"} name={"description"}>
+                        <Input></Input>
+                    </Form.Item>
+                </Form>
 
             </Modal>
             <Layout style={{height: "100vh"}}>
@@ -93,8 +145,10 @@ function App() {
 
                                 }}
                             >
-                                <img style={{flex:1,objectFit: "contain",height: '100%',
-                                    width: '100%'}} alt={"logo"} src={logo}/>
+                                <img style={{
+                                    flex: 1, objectFit: "contain", height: '100%',
+                                    width: '100%'
+                                }} alt={"logo"} src={logo}/>
                             </div>
                             <Menu
                                 mode="inline"
@@ -111,7 +165,7 @@ function App() {
                         </Layout.Content>
                     </Layout.Sider>
                     <Layout className="site-layout">
-                        <Layout.Header  style={{background: '#fff',paddingLeft:'24px'}}>
+                        <Layout.Header style={{background: '#fff', paddingLeft: '24px'}}>
 
                             <Space>
                                 <Button type="primary" icon={
@@ -119,7 +173,15 @@ function App() {
                                 } onClick={() => setCollapsed(!collapsed)}>
 
                                 </Button>
-                                <Select showSearch placeholder="Veuillez sélectionner une compétition" options={competitions}>
+                                <Select showSearch placeholder="Veuillez sélectionner une compétition"
+                                        options={competitions}
+                                        onChange={(value) => {
+                                            utils.competition = value;
+                                            utils.navigate("/");
+                                        }}
+                                        value={utils.competition}
+                                >
+
 
                                 </Select>
 

@@ -1,9 +1,9 @@
 export const utils:{
     navigate: any,
     location: any,
-    player: any,
+    competition: string | null,
 } = {
     navigate: null,
     location: null,
-    player: null,
+    competition: null,
 };

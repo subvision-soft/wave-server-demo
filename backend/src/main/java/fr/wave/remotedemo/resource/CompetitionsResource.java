@@ -18,8 +18,8 @@ public class CompetitionsResource {
     private final CompetitionRepository competitionRepository;
 
     @PostMapping()
-    public void createCompetition(@Valid Competition competition) {
-        competitionRepository.save(competition);
+    public Competition createCompetition(@RequestBody @Valid Competition competition) {
+        return competitionRepository.save(competition);
     }
 
     @GetMapping()
