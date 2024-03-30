@@ -3,13 +3,12 @@ version: '3.8'
 services:
   db:
     container_name: db
-    image: mongo:4.4.27
-    restart: always
+    image: postgres:16.2-alpine3.19
     ports:
-      - "27017:27017"
+      - "5432:5432"
     volumes:
-      - db_data:/data/db
-      - db_config:/data/configdb
+      - db_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
   backend:
     container_name: backend
     build: ./backend
@@ -24,14 +23,9 @@ services:
     container_name: frontend
     build: ./frontend
     ports:
-      - "3000:3000"
+      - "4200:4200"
     restart: always
-    links:
-      - db
-    depends_on:
-      - backend
 
 
 volumes:
   db_data:
-  db_config:
