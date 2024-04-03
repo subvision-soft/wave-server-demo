@@ -1,30 +1,24 @@
 package fr.wave.remotedemo.document;
 
-import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.persistence.*;
+import lombok.Data;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Set;
 
-@Document
-@Getter
+@Entity
+@Data
 public class Competition {
-
     @Id
-    private String id;
-
-    @NotNull(message = "Date cannot be null")
+    private Long id;
     private LocalDate date;
-
-
     private String description;
-    @Setter
-    @NotNull(message = "Name cannot be null")
     private String name;
-    @DBRef
-    private List<User> users;
+
+    @ManyToMany
+    @JoinTable(name = "competition_competitor",
+    joinColumns = @JoinColumn(name = "competition_id"),
+    inverseJoinColumns = @JoinColumn(name = "competitor_id")
+    )
+    private Set<Competitor> competitors;
 }

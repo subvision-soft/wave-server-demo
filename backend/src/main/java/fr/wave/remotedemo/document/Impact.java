@@ -1,9 +1,14 @@
 package fr.wave.remotedemo.document;
 
 
-import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import lombok.Getter;
+import lombok.Setter;
 
-@Document
+@Entity
+@Getter
+@Setter
 public class Impact {
     private float distance;
     private int score;
@@ -13,5 +18,9 @@ public class Impact {
     private int amount;
 
     private Zone zone;
+
+    private Long targetId;
+    @Id
+    private Long id;
 
 }

@@ -1,7 +1,7 @@
 package fr.wave.remotedemo.repository;
 
 import fr.wave.remotedemo.document.Target;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface TargetRepository extends MongoRepository<Target, String> {
+public interface TargetRepository extends JpaRepository<Target, String> {
 }

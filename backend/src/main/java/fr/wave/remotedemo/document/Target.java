@@ -1,16 +1,22 @@
 package fr.wave.remotedemo.document;
 
-import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.List;
 
-@Document
+@Entity
+@Setter
+@Getter
 public class Target {
-    private List<Impact> impacts;
     private int time;
     private LocalDate date;
 
-    private String userId;
+    private Long competitionId;
 
+    private Long userId;
+    @Id
+    private Long id;
 }

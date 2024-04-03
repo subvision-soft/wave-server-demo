@@ -1,6 +1,6 @@
 package fr.wave.remotedemo.resource;
 
-import fr.wave.remotedemo.document.User;
+import fr.wave.remotedemo.document.Competitor;
 import fr.wave.remotedemo.repository.UserRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,17 +15,17 @@ import java.util.List;
 public class UserResource {
     private final UserRepository userRepository;
     @PostMapping()
-    public User createUser(@RequestBody @Valid User user) {
-        return userRepository.save(user);
+    public Competitor createUser(@RequestBody @Valid Competitor competitor) {
+        return userRepository.save(competitor);
     }
 
     @GetMapping()
-    public List<User> getUsers() {
+    public List<Competitor> getUsers() {
         return userRepository.findAll();
     }
 
     @GetMapping("/{id}")
-    public User getUser(@PathVariable String id) {
+    public Competitor getUser(@PathVariable String id) {
         return userRepository.findById(id).orElse(null);
     }
 
