@@ -1,9 +1,9 @@
 package fr.wave.remotedemo.repository;
 
-import fr.wave.remotedemo.document.Category;
-import fr.wave.remotedemo.document.Competitor;
+import fr.wave.remotedemo.enums.Category;
+import fr.wave.remotedemo.entity.CompetitorEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRepository extends JpaRepository<Competitor,String> {
-    Competitor findByCategory(Category division);
+public interface UserRepository extends JpaRepository<CompetitorEntity,String> {
+    CompetitorEntity findByCategory(Category division);
 }

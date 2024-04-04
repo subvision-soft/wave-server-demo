@@ -1,7 +1,9 @@
 package fr.wave.remotedemo.resource;
 
-import fr.wave.remotedemo.document.Competition;
+import fr.wave.remotedemo.dto.CompetitionDTO;
+import fr.wave.remotedemo.entity.CompetitionEntity;
 import fr.wave.remotedemo.repository.CompetitionRepository;
+import fr.wave.remotedemo.service.ICompetitionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -15,15 +17,20 @@ import java.util.List;
 
 public class CompetitionsResource {
 
-    private final CompetitionRepository competitionRepository;
+    private final ICompetitionService competitionService;
 
     @PostMapping()
-    public Competition createCompetition(@RequestBody @Valid Competition competition) {
-        return competitionRepository.save(competition);
+    public CompetitionDTO createCompetition(@RequestBody @Valid CompetitionDTO competition) {
+        return competitionService.createCompetition(competition);
     }
 
-    @GetMapping()
-    public List<Competition> getCompetitions() {
-        return competitionRepository.findAll();
+    @PutMapping()
+    public CompetitionDTO updateCompetition(@RequestBody @Valid CompetitionDTO competition) {
+        return competitionService.updateCompetition(competition);
+    }
+
+    @GetMapping("/{id}")
+    public CompetitionDTO getCompetition(@PathVariable Long id) {
+        return competitionService.getCompetition(id);
     }
 }

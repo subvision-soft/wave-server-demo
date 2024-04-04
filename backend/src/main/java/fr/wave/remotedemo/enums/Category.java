@@ -1,4 +1,4 @@
-package fr.wave.remotedemo.document;
+package fr.wave.remotedemo.enums;
 
 public enum Category {
     MINIME(0),CADET(1),JUNIOR(2),SENIOR(3),MASTER(4);

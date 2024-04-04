@@ -1,6 +1,7 @@
-package fr.wave.remotedemo.document;
+package fr.wave.remotedemo.entity;
 
 
+import fr.wave.remotedemo.enums.Category;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +12,8 @@ import java.util.Set;
 @Entity
 @Setter
 @Getter
-public class Competitor {
+@Table(name = "competitors")
+public class CompetitorEntity {
 
     private String firstName;
     private String lastName;
@@ -24,7 +26,7 @@ public class Competitor {
     joinColumns = @JoinColumn(name = "competitor_id"),
     inverseJoinColumns = @JoinColumn(name = "competition_id")
     )
-    private Set<Competition> competitions;
+    private Set<CompetitionEntity> competitions;
 
 
 }

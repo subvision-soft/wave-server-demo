@@ -1,11 +1,11 @@
-package fr.wave.remotedemo.model;
+package fr.wave.remotedemo.dto;
 
 import lombok.Builder;
 import lombok.Getter;
 
 @Builder
 @Getter
-public class EndpointsModel {
+public class EndpointsDTO {
 
     private final String host;
     private String port;

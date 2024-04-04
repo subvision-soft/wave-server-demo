@@ -1,4 +1,4 @@
-package fr.wave.remotedemo.document;
+package fr.wave.remotedemo.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

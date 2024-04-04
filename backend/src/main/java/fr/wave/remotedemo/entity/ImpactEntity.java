@@ -1,15 +1,18 @@
-package fr.wave.remotedemo.document;
+package fr.wave.remotedemo.entity;
 
 
+import fr.wave.remotedemo.enums.Zone;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
-public class Impact {
+@Table(name = "impacts")
+public class ImpactEntity {
     private float distance;
     private int score;
 

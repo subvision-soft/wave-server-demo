@@ -1,4 +1,4 @@
-package fr.wave.remotedemo.document;
+package fr.wave.remotedemo.enums;
 
 public enum Zone {
     TOP_LEFT,

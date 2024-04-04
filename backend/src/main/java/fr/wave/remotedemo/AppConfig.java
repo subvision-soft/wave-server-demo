@@ -1,6 +1,6 @@
 package fr.wave.remotedemo;
 
-import fr.wave.remotedemo.model.EndpointsModel;
+import fr.wave.remotedemo.dto.EndpointsDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
@@ -24,8 +24,8 @@ public class AppConfig {
         }
     }
 
-    public EndpointsModel getEndpointsModel() {
-        return EndpointsModel.builder()
+    public EndpointsDTO getEndpointsModel() {
+        return EndpointsDTO.builder()
                 .host(host)
                 .port(port)
                 .postTarget(postTarget)

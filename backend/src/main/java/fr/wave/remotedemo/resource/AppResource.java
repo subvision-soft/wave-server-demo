@@ -1,7 +1,7 @@
 package fr.wave.remotedemo.resource;
 
 import fr.wave.remotedemo.AppConfig;
-import fr.wave.remotedemo.model.EndpointsModel;
+import fr.wave.remotedemo.dto.EndpointsDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -22,7 +22,7 @@ public class AppResource {
     }
 
     @GetMapping("/endpoints")
-    public ResponseEntity<EndpointsModel> getEndpoints() {
+    public ResponseEntity<EndpointsDTO> getEndpoints() {
         return ResponseEntity.ok( this.appConfig.getEndpointsModel());
     }
 

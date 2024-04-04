@@ -1,16 +1,20 @@
-package fr.wave.remotedemo.document;
+package fr.wave.remotedemo.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
 
+
+
 @Entity
-@Setter
-@Getter
-public class Target {
+@Table(name = "targets")
+@Data
+@Builder
+public class TargetEntity {
     private int time;
     private LocalDate date;
 
@@ -19,4 +23,9 @@ public class Target {
     private Long userId;
     @Id
     private Long id;
+
+
+
+
+    private String pictureId;
 }
