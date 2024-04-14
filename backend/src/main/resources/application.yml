@@ -19,7 +19,7 @@ spring:
     active: dev
 app:
   endpoints:
-    post-target: /target
+    post-target: /competions/{competitionId}/competitors/{competitorId}/targets
     get-competitors: /competitors
     is-alive: /is-alive
     get-name: /name

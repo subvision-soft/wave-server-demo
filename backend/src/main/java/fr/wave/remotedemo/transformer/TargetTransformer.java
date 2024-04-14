@@ -11,7 +11,7 @@ public class TargetTransformer {
                 .competitionId(entity.getCompetitionId())
                 .date(entity.getDate())
                 .time(entity.getTime())
-                .userId(entity.getUserId())
+                .userId(entity.getCompetitorId())
                 .pictureId(entity.getPictureId())
                 .build();
     }
@@ -22,7 +22,7 @@ public class TargetTransformer {
                 .competitionId(dto.getCompetitionId())
                 .date(dto.getDate())
                 .time(dto.getTime())
-                .userId(dto.getUserId())
+                .competitorId(dto.getUserId())
                 .pictureId(dto.getPictureId())
                 .build();
     }

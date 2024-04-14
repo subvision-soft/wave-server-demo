@@ -4,13 +4,14 @@ import fr.wave.remotedemo.dto.CompetitionDTO;
 import fr.wave.remotedemo.entity.CompetitionEntity;
 import fr.wave.remotedemo.repository.CompetitionRepository;
 import fr.wave.remotedemo.service.ICompetitionService;
+import fr.wave.remotedemo.utils.EndpointsUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RequestMapping("/competitions")
+@RequestMapping(EndpointsUtils.COMPETITIONS)
 @RequiredArgsConstructor
 @RestController
 @CrossOrigin
@@ -32,5 +33,10 @@ public class CompetitionsResource {
     @GetMapping("/{id}")
     public CompetitionDTO getCompetition(@PathVariable Long id) {
         return competitionService.getCompetition(id);
+    }
+
+    @GetMapping()
+    public List<CompetitionDTO> getCompetitions() {
+        return competitionService.getCompetitions();
     }
 }

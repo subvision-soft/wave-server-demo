@@ -20,7 +20,7 @@ public class TargetEntity {
 
     private Long competitionId;
 
-    private Long userId;
+    private Long competitorId;
     @Id
     private Long id;
 

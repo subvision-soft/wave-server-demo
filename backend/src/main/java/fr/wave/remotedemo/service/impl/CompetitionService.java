@@ -7,7 +7,9 @@ import fr.wave.remotedemo.transformer.CompetitionTransformer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,5 +28,9 @@ public class CompetitionService implements ICompetitionService {
         return CompetitionTransformer.toDto(Objects.requireNonNull(competitionRepository.findById(String.valueOf(id)).orElse(null)));
     }
 
+    @Override
+    public List<CompetitionDTO> getCompetitions() {
+        return competitionRepository.findAll().stream().map(CompetitionTransformer::toDto).collect(Collectors.toList());
+    }
 
 }

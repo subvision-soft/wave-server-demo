@@ -1,1 +1,13 @@
-<p>competitions works!</p>
+<div class="competition" (click)="openCompetition(competition.id)"  *ngFor="let competition of competitions">
+  <h2>{{competition.name}}</h2>
+  <p>{{competition.description}}</p>
+  <p>{{competition.date}}</p>
+</div>
+
+<form [formGroup]="competitionForm" (ngSubmit)="submit()">
+  <input required type="text" formControlName="name" placeholder="Name">
+  <input required type="text" formControlName="description" placeholder="Description">
+  <input required type="date" formControlName="date" placeholder="Date">
+
+  <button type="submit">Nouvelle compétition</button>
+</form>
