@@ -1,0 +1,22 @@
+<table>
+  <thead>
+  <tr>
+    <th>Id</th>
+    <th>Prénom</th>
+    <th>Nom</th>
+    <th>Catégorie</th>
+    <th></th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let competitor of competitors" (click)="openCompetitor(competitor.id)">
+    <td>{{ competitor.id }}</td>
+    <td>{{ competitor.firstName }}</td>
+    <td>{{ competitor.lastName }}</td>
+    <td>{{ competitor.category }}</td>
+    <td>
+      <ng-icon *ngFor="let action of actions" [svg]="action.icon" (click)="callMethod(competitor,action,$event)"></ng-icon>
+    </td>
+  </tr>
+  </tbody>
+</table>

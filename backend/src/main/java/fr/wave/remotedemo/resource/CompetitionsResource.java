@@ -25,6 +25,7 @@ public class CompetitionsResource {
         return competitionService.createCompetition(competition);
     }
 
+
     @PutMapping()
     public CompetitionDTO updateCompetition(@RequestBody @Valid CompetitionDTO competition) {
         return competitionService.updateCompetition(competition);
@@ -38,5 +39,10 @@ public class CompetitionsResource {
     @GetMapping()
     public List<CompetitionDTO> getCompetitions() {
         return competitionService.getCompetitions();
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteCompetition(@PathVariable Long id) {
+        competitionService.deleteCompetition(id);
     }
 }

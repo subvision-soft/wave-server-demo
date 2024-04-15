@@ -27,6 +27,18 @@ public class CompetitionCompetitorResource {
         return userRepository.save(competitor);
     }
 
+
+    @PostMapping("/{id}")
+    public CompetitorEntity addCompetitor(@PathVariable String id, @PathVariable String competitionId) {
+        CompetitionEntity competition = competitionRepository.findById(competitionId).orElse(null);
+        CompetitorEntity competitor = userRepository.findById(id).orElse(null);
+        competition.getCompetitors().add(competitor);
+        competitionRepository.save(competition);
+        return competitor;
+    }
+
+
+
     @GetMapping()
     public List<CompetitorEntity> getUsers(@PathVariable String competitionId) {
         CompetitionEntity competition = competitionRepository.findById(competitionId).orElse(null);

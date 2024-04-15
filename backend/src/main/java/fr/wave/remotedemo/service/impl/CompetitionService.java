@@ -33,4 +33,9 @@ public class CompetitionService implements ICompetitionService {
         return competitionRepository.findAll().stream().map(CompetitionTransformer::toDto).collect(Collectors.toList());
     }
 
+    @Override
+    public void deleteCompetition(Long id) {
+        competitionRepository.deleteById(String.valueOf(id));
+    }
+
 }

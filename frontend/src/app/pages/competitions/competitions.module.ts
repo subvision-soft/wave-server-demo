@@ -4,17 +4,19 @@ import {CompetitionsComponent} from "./components/competitions/competitions.comp
 import {CompetitionComponent} from "./components/competition/competition.component";
 import {CompetitionsRoutingModule} from "./competitions-routing.module";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {NgIcon} from "@ng-icons/core";
 
 
 
 @NgModule({
   declarations: [CompetitionsComponent,CompetitionComponent],
-  imports: [
-    CommonModule,
-    CompetitionsRoutingModule,
-    FormsModule,
-    ReactiveFormsModule,
-    ReactiveFormsModule
-  ]
+    imports: [
+        CommonModule,
+        CompetitionsRoutingModule,
+        FormsModule,
+        ReactiveFormsModule,
+        ReactiveFormsModule,
+        NgIcon
+    ]
 })
 export class CompetitionsModule { }

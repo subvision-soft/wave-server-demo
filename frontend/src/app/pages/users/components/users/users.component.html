@@ -1,1 +1,20 @@
-<p>users works!</p>
+
+<form (ngSubmit)="onSubmit()" [formGroup]="competitorForm">
+<app-competitor-table [competitors]="competitors" ></app-competitor-table>
+  <tr>
+    <td><input [required]="true" type="text" name="id" formControlName="id" placeholder="Id"></td>
+    <td><input [required]="true" type="text" name="firstName" formControlName="firstName" placeholder="Prénom"></td>
+    <td><input [required]="true" type="text" name="lastName" formControlName="lastName" placeholder="Nom"></td>
+    <td>
+      <select formControlName="category" required>
+        <option value="MASTER">Master</option>
+        <option value="SENIOR">Senior</option>
+        <option value="JUNIOR">Junior</option>
+        <option value="CADET">Cadet</option>
+        <option value="MINIME">Minime</option>
+      </select>
+    <td>
+      <button type="submit"><ng-icon [svg]="jamPlus"></ng-icon></button>
+    </td>
+  </tr>
+</form>

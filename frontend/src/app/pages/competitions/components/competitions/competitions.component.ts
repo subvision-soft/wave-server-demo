@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {CompetitionsService} from "../../../../services/competitions.service";
 import {CompetitionModel} from "../../../../models/competition.model";
-import { FormGroup, FormControl } from '@angular/forms';
+import {FormControl, FormGroup} from '@angular/forms';
 import {Router} from "@angular/router";
+import {jamPlus, jamTrash} from '@ng-icons/jam-icons';
+
 @Component({
   selector: 'app-competitions',
 
@@ -11,35 +13,44 @@ import {Router} from "@angular/router";
 })
 export class CompetitionsComponent {
 
-  competitions:CompetitionModel[] = [];
+  competitions: CompetitionModel[] = [];
   competitionForm: FormGroup = new FormGroup({
     name: new FormControl(''),
     description: new FormControl(''),
     date: new FormControl(''),
   })
+  jamPlus = jamPlus;
+  jamTrash = jamTrash;
 
 
+  constructor(private competitionService: CompetitionsService, private router: Router) {
+    this.loadCompetitions();
+  }
 
-constructor(private competitionService: CompetitionsService,private router: Router) {
-  competitionService.getAll().then((res) => {
-    console.log(res);
-    res.json().then((data) => {
-      this.competitions = data;
+
+  loadCompetitions() {
+    this.competitionService.getAll().then((res) => {
+      res.json().then((data) => {
+        this.competitions = data;
+      });
     });
-  });
-}
+  }
 
   submit() {
     this.competitionService.create(this.competitionForm.value).then((res) => {
-      console.log(res);
+      this.loadCompetitions();
+      this.competitionForm.reset();
     });
-
-
-
-
   }
 
   openCompetition(id: any) {
     this.router.navigate(['/competitions', id]);
+  }
+
+  deleteCompetition(id: any, $event: Event) {
+    $event.stopPropagation();
+    this.competitionService.delete(id).then(response => {
+      this.loadCompetitions();
+    });
   }
 }

@@ -12,4 +12,6 @@ public interface ICompetitionService {
     CompetitionDTO getCompetition(Long id);
 
     List<CompetitionDTO> getCompetitions();
+
+    void deleteCompetition(Long id);
 }

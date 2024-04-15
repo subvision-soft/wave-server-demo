@@ -2,6 +2,7 @@ package fr.wave.remotedemo.entity;
 
 
 import fr.wave.remotedemo.enums.Category;
+import fr.wave.remotedemo.enums.Sex;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,6 +21,7 @@ public class CompetitorEntity {
     private Category category;
     @Id
     private Long id;
+    private Sex sex;
 
     @ManyToMany
     @JoinTable(name = "competition_competitor",
