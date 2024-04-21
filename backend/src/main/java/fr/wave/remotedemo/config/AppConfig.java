@@ -1,4 +1,4 @@
-package fr.wave.remotedemo;
+package fr.wave.remotedemo.config;
 
 import fr.wave.remotedemo.dto.EndpointsDTO;
 import org.springframework.beans.factory.annotation.Value;

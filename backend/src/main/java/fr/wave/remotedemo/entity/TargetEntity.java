@@ -1,19 +1,19 @@
 package fr.wave.remotedemo.entity;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
-
+import java.util.List;
+import java.util.Set;
 
 
 @Entity
 @Table(name = "targets")
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class TargetEntity {
     private int time;
     private LocalDate date;
@@ -24,7 +24,9 @@ public class TargetEntity {
     @Id
     private Long id;
 
-
+    @OneToMany
+    @JoinColumn(name = "targetId")
+    private Set<ImpactEntity> impacts;
 
 
     private String pictureId;

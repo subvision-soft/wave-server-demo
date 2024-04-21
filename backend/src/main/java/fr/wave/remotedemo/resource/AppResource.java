@@ -1,6 +1,6 @@
 package fr.wave.remotedemo.resource;
 
-import fr.wave.remotedemo.AppConfig;
+import fr.wave.remotedemo.config.AppConfig;
 import fr.wave.remotedemo.dto.EndpointsDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

@@ -1,19 +1,17 @@
-package fr.wave.remotedemo.entity;
-
+package fr.wave.remotedemo.dto;
 
 import fr.wave.remotedemo.enums.Zone;
-import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Entity
-@Data
-@Builder
-@NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "impacts")
-public class ImpactEntity {
+@Builder
+@Data
+@NoArgsConstructor
+public class ImpactDTO {
     private float distance;
     private int score;
 
@@ -24,7 +22,6 @@ public class ImpactEntity {
     private Zone zone;
 
     private Long targetId;
-    @Id
     private Long id;
 
 }

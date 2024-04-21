@@ -6,4 +6,6 @@ public class EndpointsUtils {
     public static final String COMPETITIONS_COMPETITORS_TARGETS = COMPETITIONS_COMPETITORS + "/{competitorId}/targets";
     public static final String COMPETITIONS_TARGETS = COMPETITIONS + "/{competitionId}/targets";
     public static final String COMPETITORS = "/competitors";
+
+    public static final String CATEGORIES = "**/categories";
 }
