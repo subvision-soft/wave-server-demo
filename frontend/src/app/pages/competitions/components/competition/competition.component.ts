@@ -13,6 +13,8 @@ export class CompetitionComponent {
 
   competition:CompetitionModel;
 
+  qrcode: string;
+
   constructor(private competitionService: CompetitionsService, private route: ActivatedRoute) {
     const id = this.route.snapshot.paramMap.get('id');
     if (!id) {
@@ -22,9 +24,19 @@ export class CompetitionComponent {
       console.log(res);
       res.json().then((data) => {
         this.competition = data;
+        this.generateQrCode();
+
       });
     });
 
+  }
+
+  generateQrCode() {
+    fetch(`http://localhost:8080/api/adress`).then((res) => {
+      res.text().then((data) => {
+        this.qrcode = `http://${data}/competitions/${this.competition.id}`;
+      });
+    });
   }
 
 }

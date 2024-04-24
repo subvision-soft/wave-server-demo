@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin
-@RequestMapping(EndpointsUtils.CATEGORIES)
+@RequestMapping(value= {EndpointsUtils.COMPETITIONS_CATEGORIES, EndpointsUtils.CATEGORIES})
 @RequiredArgsConstructor
 public class CategoriesResource {
 

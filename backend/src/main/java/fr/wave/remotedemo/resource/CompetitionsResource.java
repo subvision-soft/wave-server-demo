@@ -21,7 +21,7 @@ public class CompetitionsResource {
     private final ICompetitionService competitionService;
 
 
-    @GetMapping("is-wave-db-alive")
+    @GetMapping("/{id}/is-wave-db-alive")
     public String isAlive() {
         return "Server is alive";
     }

@@ -7,5 +7,6 @@ public class EndpointsUtils {
     public static final String COMPETITIONS_TARGETS = COMPETITIONS + "/{competitionId}/targets";
     public static final String COMPETITORS = "/competitors";
 
-    public static final String CATEGORIES = "**/categories";
+    public static final String COMPETITIONS_CATEGORIES = COMPETITIONS + "/{competitionId}/categories";
+    public static final String CATEGORIES = "/categories";
 }
