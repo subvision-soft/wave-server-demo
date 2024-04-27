@@ -22,6 +22,7 @@ public class TargetEntity {
 
     private Long competitorId;
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @OneToMany

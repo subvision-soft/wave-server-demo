@@ -15,17 +15,14 @@ public class CompetitionTransformer {
         return CompetitionDTO.builder()
                 .id(competition.getId())
                 .date(competition.getDate())
-                .competitors(new ArrayList<>(competition.getCompetitors()))
+                .competitors(competition.getCompetitors().stream().map(CompetitorTransformer::toDto).toList())
                 .description(competition.getDescription())
                 .name(competition.getName())
                 .build();
     }
 
     public static CompetitionEntity toEntity(CompetitionDTO competition) {
-        List<CompetitorEntity> competitors = competition.getCompetitors();
-        if (competitors == null) {
-            competitors = new ArrayList<>();
-        }
+        List<CompetitorEntity> competitors = competition.getCompetitors().stream().map(CompetitorTransformer::toEntity).toList();
 
         CompetitionEntity competitionEntity = new CompetitionEntity();
         if (competition.getId() != null) {

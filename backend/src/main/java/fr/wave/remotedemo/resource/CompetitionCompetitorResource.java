@@ -1,9 +1,12 @@
 package fr.wave.remotedemo.resource;
 
+import fr.wave.remotedemo.dto.CompetitorDTO;
 import fr.wave.remotedemo.entity.CompetitionEntity;
 import fr.wave.remotedemo.entity.CompetitorEntity;
 import fr.wave.remotedemo.repository.CompetitionRepository;
 import fr.wave.remotedemo.repository.UserRepository;
+import fr.wave.remotedemo.transformer.CompetitionTransformer;
+import fr.wave.remotedemo.transformer.CompetitorTransformer;
 import fr.wave.remotedemo.utils.EndpointsUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,30 +22,31 @@ public class CompetitionCompetitorResource {
     private final UserRepository userRepository;
     private final CompetitionRepository competitionRepository;
 
+
     @PostMapping()
-    public CompetitorEntity createUser(@RequestBody @Valid CompetitorEntity competitor, @PathVariable String competitionId) {
+    public CompetitorDTO createUser(@RequestBody @Valid CompetitorEntity competitor, @PathVariable String competitionId) {
         CompetitionEntity competition = competitionRepository.findById(competitionId ).orElse(null);
         competition.getCompetitors().add(competitor);
         competitionRepository.save(competition);
-        return userRepository.save(competitor);
+        return CompetitorTransformer.toDto(userRepository.save(competitor)) ;
     }
 
 
     @PostMapping("/{id}")
-    public CompetitorEntity addCompetitor(@PathVariable String id, @PathVariable String competitionId) {
+    public CompetitorDTO addCompetitor(@PathVariable String id, @PathVariable String competitionId) {
         CompetitionEntity competition = competitionRepository.findById(competitionId).orElse(null);
         CompetitorEntity competitor = userRepository.findById(id).orElse(null);
         competition.getCompetitors().add(competitor);
         competitionRepository.save(competition);
-        return competitor;
+        return CompetitorTransformer.toDto(competitor);
     }
 
 
 
     @GetMapping()
-    public List<CompetitorEntity> getUsers(@PathVariable String competitionId) {
+    public List<CompetitorDTO> getUsers(@PathVariable String competitionId) {
         CompetitionEntity competition = competitionRepository.findById(competitionId).orElse(null);
-        return competition.getCompetitors().stream().toList();
+        return competition.getCompetitors().stream().map(CompetitorTransformer::toDto).toList();
     }
 
     @DeleteMapping("/{id}")

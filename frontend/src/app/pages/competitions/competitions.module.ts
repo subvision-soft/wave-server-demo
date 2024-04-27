@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import {CommonModule, NgIf} from '@angular/common';
+import {CommonModule, NgForOf, NgIf} from '@angular/common';
 import {CompetitionsComponent} from "./components/competitions/competitions.component";
 import {CompetitionComponent} from "./components/competition/competition.component";
 import {CompetitionsRoutingModule} from "./competitions-routing.module";
@@ -19,7 +19,10 @@ import { QrCodeModule } from 'ng-qrcode';
     ReactiveFormsModule,
     NgIcon,
     QrCodeModule,
-    NgIf
+    NgIf,
+    NgForOf,
+    NgIcon,
+    NgIcon
   ]
 })
 export class CompetitionsModule { }

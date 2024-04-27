@@ -15,5 +15,5 @@ public class CompetitionDTO {
     private String description;
     private String name;
 
-    private List<CompetitorEntity> competitors;
+    private List<CompetitorDTO> competitors;
 }

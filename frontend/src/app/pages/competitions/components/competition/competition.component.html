@@ -10,4 +10,24 @@
 
 </p>
 
-<table></table>
+
+
+<div class="competitors">
+  <div class="all">
+    <span *ngFor="let competitor of competitors">
+          <span>{{competitor.firstName}}</span>
+          <span>{{competitor.id}}</span>
+      <button (click)="addCompetitor(competitor)" ><ng-icon [svg]="jamPlus"></ng-icon></button>
+    </span>
+  </div>
+  <div class="subscribed">
+    <span *ngFor="let competitor of subscribedCompetitors">
+
+          <span>{{competitor.firstName}}</span>
+
+          <span>{{competitor.id}}</span>
+      <button (click)="removeCompetitor(competitor)" ><ng-icon [svg]="jamMinus"></ng-icon></button>
+    </span>
+
+  </div>
+</div>

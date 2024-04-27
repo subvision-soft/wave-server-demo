@@ -36,6 +36,7 @@ public class TargetResource {
     @PostMapping
     public TargetEntity addTarget(@RequestBody UploadTargetDTO target, @PathVariable Long competitionId) {
         String base64 = target.getPictureBase64();
+        base64 = base64.replace("data:image/jpeg;base64,", "");
         byte[] bytes = java.util.Base64.getDecoder().decode(base64);
         FileDTO fileDTO = FileDTO.builder()
                 .type("image/jpeg")

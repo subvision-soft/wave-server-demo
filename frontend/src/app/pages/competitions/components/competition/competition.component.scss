@@ -1,0 +1,12 @@
+.competitors {
+  display: flex;
+
+  .all, .subscribed {
+    display: flex;
+    flex-direction: column;
+    span {
+      display: flex;
+      flex-direction: row;
+    };
+  }
+}

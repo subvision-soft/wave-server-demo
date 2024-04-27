@@ -24,4 +24,7 @@ public class ImpactDTO {
     private Long targetId;
     private Long id;
 
+
+
+
 }
