@@ -1,7 +1,7 @@
 package fr.wave.remotedemo.resource;
 
 import fr.wave.remotedemo.dto.EnumDTO;
-import fr.wave.remotedemo.enums.Category;
+import fr.wave.remotedemo.enums.Event;
 import fr.wave.remotedemo.transformer.EnumTransformer;
 import fr.wave.remotedemo.utils.EndpointsUtils;
 import lombok.RequiredArgsConstructor;
@@ -15,12 +15,11 @@ import java.util.List;
 
 @RestController
 @CrossOrigin
-@RequestMapping(value = {EndpointsUtils.COMPETITIONS_CATEGORIES, EndpointsUtils.CATEGORIES})
+@RequestMapping(value = {EndpointsUtils.COMPETITIONS_EVENTS, EndpointsUtils.EVENTS})
 @RequiredArgsConstructor
-public class CategoriesResource {
-
+public class EventsResource {
     @GetMapping()
-    public List<EnumDTO> getCategories() {
-        return Arrays.stream(Category.values()).map(EnumTransformer::toDTO).toList();
+    public List<EnumDTO> getEvents() {
+        return Arrays.stream(Event.values()).map(EnumTransformer::toDTO).toList();
     }
 }
