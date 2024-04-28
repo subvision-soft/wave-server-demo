@@ -4,6 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import {NgxWaveUiModule} from "ngx-wave-ui";
+import {TargetsService} from "./services/targets.service";
 @NgModule({
   declarations: [
     AppComponent
@@ -14,7 +15,9 @@ import {NgxWaveUiModule} from "ngx-wave-ui";
     NgxWaveUiModule,
 
   ],
-  providers: [],
+  providers: [
+    TargetsService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

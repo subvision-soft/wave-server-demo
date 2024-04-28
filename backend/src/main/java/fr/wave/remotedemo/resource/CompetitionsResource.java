@@ -7,6 +7,7 @@ import fr.wave.remotedemo.service.ICompetitionService;
 import fr.wave.remotedemo.utils.EndpointsUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -48,6 +49,7 @@ public class CompetitionsResource {
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCompetition(@PathVariable Long id) {
         competitionService.deleteCompetition(id);
     }

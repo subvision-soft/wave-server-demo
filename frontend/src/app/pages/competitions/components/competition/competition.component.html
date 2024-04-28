@@ -31,3 +31,5 @@
 
   </div>
 </div>
+<app-target (onDelete)="loadTargets()" *ngFor="let target of targets" [target]="target"></app-target>
+

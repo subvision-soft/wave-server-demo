@@ -10,19 +10,21 @@ import fr.wave.remotedemo.transformer.FileTransformer;
 import fr.wave.remotedemo.transformer.ImpactTransformer;
 import fr.wave.remotedemo.utils.EndpointsUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.codec.ServerSentEvent;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.http.HttpStatus;
 
 @RestController
 @CrossOrigin
 @RequestMapping(EndpointsUtils.COMPETITIONS_TARGETS)
 @RequiredArgsConstructor
-public class TargetResource {
+public class CompetitionTargetResource {
 
     private final TargetRepository targetRepository;
     private final FileRepository fileRepository;
@@ -49,10 +51,11 @@ public class TargetResource {
                 .competitionId(competitionId)
                 .competitorId(target.getUserId())
                 .pictureId(file.getId())
+                .event(target.getEvent())
                 .impacts(target.getImpacts().stream().map(ImpactTransformer::toEntity).collect(Collectors.toSet()))
                 .build();
         TargetEntity save = targetRepository.save(targetEntity);
-        sendSse(competitionId, save);
+        sendUpdate(save, competitionId);
         return save;
     }
 
@@ -60,17 +63,33 @@ public class TargetResource {
         SseEmitter sseEmitter = sseMap.get(competitionId);
         if (sseEmitter != null) {
             try {
-                sseEmitter.send(ServerSentEvent.builder(target).build());
+                System.out.println("Sending sse");
+                sseEmitter.send(target.getId().toString());
             } catch (Exception e) {
+                System.out.println("Error sending sse");
                 sseEmitter.complete();
                 sseMap.remove(competitionId);
+                throw new RuntimeException(e);
             }
+        } else {
+            System.out.println("No sse to send");
         }
     }
 
     @GetMapping("/sse")
     public SseEmitter getSse(@PathVariable Long competitionId) {
-        return sseMap.computeIfAbsent(competitionId, k -> new SseEmitter());
+        return sseMap.computeIfAbsent(competitionId, k -> new SseEmitter(0L));
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteTarget(@PathVariable Long id) {
+        targetRepository.deleteById(String.valueOf(id));
+    }
+
+    @SendTo("update")
+    public TargetEntity sendUpdate(TargetEntity target, @DestinationVariable Long competitionId) {
+        return target;
     }
 
 }

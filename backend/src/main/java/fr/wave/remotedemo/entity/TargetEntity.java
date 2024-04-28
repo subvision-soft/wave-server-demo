@@ -1,5 +1,6 @@
 package fr.wave.remotedemo.entity;
 
+import fr.wave.remotedemo.enums.Event;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -31,4 +32,6 @@ public class TargetEntity {
 
 
     private String pictureId;
+
+    private Event event;
 }

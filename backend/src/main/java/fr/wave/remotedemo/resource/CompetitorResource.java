@@ -6,6 +6,7 @@ import fr.wave.remotedemo.repository.CompetitorRepository;
 import fr.wave.remotedemo.transformer.CompetitorTransformer;
 import fr.wave.remotedemo.utils.EndpointsUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,6 +31,7 @@ public class CompetitorResource {
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCompetitor(@PathVariable Long id) {
         competitorRepository.deleteById(String.valueOf(id));
     }

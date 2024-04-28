@@ -10,6 +10,7 @@ import fr.wave.remotedemo.transformer.CompetitorTransformer;
 import fr.wave.remotedemo.utils.EndpointsUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -50,6 +51,8 @@ public class CompetitionCompetitorResource {
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+
     public void removeCompetitor(@PathVariable Long id, @PathVariable String competitionId) {
         CompetitionEntity competition = competitionRepository.findById(competitionId).orElse(null);
         competition.getCompetitors().removeIf(competitor -> competitor.getId().equals(id));

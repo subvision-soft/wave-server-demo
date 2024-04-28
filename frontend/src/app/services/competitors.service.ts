@@ -1,5 +1,6 @@
 import {Injectable} from "@angular/core";
 import {CompetitorModel} from "../models/competitor.model";
+import {Paths} from "../statics/Paths";
 
 @Injectable({
   providedIn: 'root'
@@ -8,17 +9,14 @@ import {CompetitorModel} from "../models/competitor.model";
 export class CompetitorsService {
 
   constructor() {
-
   }
 
-  endpoint = 'http://localhost:8080/api';
-
   getAll():Promise<Response> {
-    return fetch(`${this.endpoint}/competitors`)
+    return fetch(`${Paths.API_ENDPOINT}/competitors`)
   }
 
   create(data:CompetitorModel) {
-    return fetch(`${this.endpoint}/competitors`, {
+    return fetch(`${Paths.API_ENDPOINT}/competitors`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -28,11 +26,11 @@ export class CompetitorsService {
   }
 
   get(id:number) {
-    return fetch(`${this.endpoint}/competitors/${id}`)
+    return fetch(`${Paths.API_ENDPOINT}/competitors/${id}`)
   }
 
   delete(id:number) {
-    return fetch(`${this.endpoint}/competitors/${id}`, {
+    return fetch(`${Paths.API_ENDPOINT}/competitors/${id}`, {
       method: 'DELETE'
     })
   }

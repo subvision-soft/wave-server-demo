@@ -1,5 +1,6 @@
 package fr.wave.remotedemo.dto;
 
+import fr.wave.remotedemo.enums.Event;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,4 +26,6 @@ public class UploadTargetDTO {
     private String pictureBase64;
 
     private List<ImpactDTO> impacts;
+
+    private Event event;
 }

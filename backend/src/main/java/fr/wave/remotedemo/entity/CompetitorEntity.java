@@ -29,6 +29,4 @@ public class CompetitorEntity {
     inverseJoinColumns = @JoinColumn(name = "competition_id")
     )
     private Set<CompetitionEntity> competitions;
-
-
 }

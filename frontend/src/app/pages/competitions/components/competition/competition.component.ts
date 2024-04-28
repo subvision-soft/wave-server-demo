@@ -5,6 +5,8 @@ import {ActivatedRoute} from "@angular/router";
 import {CompetitorModel} from "../../../../models/competitor.model";
 import {CompetitorsService} from "../../../../services/competitors.service";
 import {jamMinus, jamPlus } from '@ng-icons/jam-icons';
+import {TargetModel} from "../../../../models/target.model";
+import {Paths} from "../../../../statics/Paths";
 
 @Component({
   selector: 'app-competition',
@@ -17,6 +19,8 @@ export class CompetitionComponent {
   competition: CompetitionModel;
 
   competitors: CompetitorModel[];
+
+  targets: TargetModel[];
 
   subscribedCompetitors: CompetitorModel[];
 
@@ -33,15 +37,25 @@ export class CompetitionComponent {
     if (!id) {
       return;
     }
-    competitionsService.get(parseInt(id)).then((res) => {
-      console.log(res);
-      res.json().then((data) => {
+    competitionsService.get(parseInt(id)).then((data) => {
         this.competition = data;
         this.generateQrCode();
         this.loadCompetitors();
-      });
+        this.loadTargets();
     });
 
+    let ws = new WebSocket(`${Paths.API_ENDPOINT_WS}/competitions/${id}/update`);
+    ws.onmessage = (event) => {
+      this.loadTargets();
+    }
+
+  }
+
+
+  loadTargets() {
+    this.competitionsService.getTargets(this.competition.id).then((data) => {
+      this.targets = [...data];
+    });
   }
 
 
@@ -63,10 +77,8 @@ export class CompetitionComponent {
         this.competitors = data;
       });
     });
-    this.competitionsService.getCompetitors(this.competition.id).then((res) => {
-      res.json().then((data) => {
+    this.competitionsService.getCompetitors(this.competition.id).then((data) => {
         this.subscribedCompetitors = data;
-      });
     });
   }
 
@@ -77,5 +89,6 @@ export class CompetitionComponent {
       });
     });
   }
+
 
 }

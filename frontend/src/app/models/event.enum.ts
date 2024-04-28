@@ -1,0 +1,7 @@
+export enum EventEnum {
+
+  SUPER_BIATHLON = 'SUPER_BIATHLON',
+  BIATHLON = 'BIATHLON',
+  PRECISION = 'PRECISION',
+  RELAY = 'RELAI',
+}

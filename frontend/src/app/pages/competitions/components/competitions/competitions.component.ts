@@ -29,15 +29,13 @@ export class CompetitionsComponent {
 
 
   loadCompetitions() {
-    this.competitionService.getAll().then((res) => {
-      res.json().then((data) => {
+    this.competitionService.getAll().then((data) => {
         this.competitions = data;
-      });
     });
   }
 
   submit() {
-    this.competitionService.create(this.competitionForm.value).then((res) => {
+    this.competitionService.create(this.competitionForm.value).then(() => {
       this.loadCompetitions();
       this.competitionForm.reset();
     });
