@@ -1,14 +1,6 @@
 
 <qr-code *ngIf="qrcode" [value]="qrcode"></qr-code>
-<h1>
-  {{competition.name}}
-</h1>
-<p>
-  {{competition.description}}
-</p>
-<p>
 
-</p>
 
 
 
@@ -31,5 +23,6 @@
 
   </div>
 </div>
+
 <app-target (onDelete)="loadTargets()" *ngFor="let target of targets" [target]="target"></app-target>
 

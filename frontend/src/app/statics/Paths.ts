@@ -5,5 +5,5 @@ export class Paths {
 
 
   public static readonly API_ENDPOINT = 'http://localhost:8080/api';
-  public static readonly API_ENDPOINT_WS = 'ws://localhost:8080/api/ws';
+  public static readonly API_ENDPOINT_WS = 'ws://localhost:8080/api/wave-websocket';
 }

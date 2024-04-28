@@ -4,9 +4,10 @@ import {CompetitionModel} from "../../../../models/competition.model";
 import {ActivatedRoute} from "@angular/router";
 import {CompetitorModel} from "../../../../models/competitor.model";
 import {CompetitorsService} from "../../../../services/competitors.service";
-import {jamMinus, jamPlus } from '@ng-icons/jam-icons';
+import {jamMinus, jamPlus} from '@ng-icons/jam-icons';
 import {TargetModel} from "../../../../models/target.model";
 import {Paths} from "../../../../statics/Paths";
+import {Client} from '@stomp/stompjs';
 
 @Component({
   selector: 'app-competition',
@@ -22,33 +23,51 @@ export class CompetitionComponent {
 
   targets: TargetModel[];
 
+  stompClient: Client;
+
   subscribedCompetitors: CompetitorModel[];
 
   qrcode: string;
-  jamPlus=jamPlus;
-  jamMinus=jamMinus;
+  jamPlus = jamPlus;
+  jamMinus = jamMinus;
 
   constructor(
     private competitionsService: CompetitionsService,
     private route: ActivatedRoute,
     private competitorsService: CompetitorsService
-    ) {
+  ) {
     const id = this.route.snapshot.paramMap.get('id');
     if (!id) {
       return;
     }
     competitionsService.get(parseInt(id)).then((data) => {
-        this.competition = data;
-        this.generateQrCode();
-        this.loadCompetitors();
-        this.loadTargets();
+      this.competition = data;
+      this.generateQrCode();
+      this.loadCompetitors();
+      this.loadTargets();
     });
 
-    let ws = new WebSocket(`${Paths.API_ENDPOINT_WS}/competitions/${id}/update`);
-    ws.onmessage = (event) => {
-      this.loadTargets();
+    this.stompClient = new Client({
+      brokerURL: Paths.API_ENDPOINT_WS,
+    });
+
+
+    this.stompClient.onConnect= (frame) => {
+      console.log('connected', frame);
+      this.stompClient.subscribe(`/competitions/${id}/targets/update`, (message) => {
+        this.loadTargets()
+      });
     }
 
+    this.stompClient.onWebSocketError = (event) => {
+      console.error('error', event);
+    }
+
+    this.stompClient.onStompError = (frame) => {
+      console.error('stomp error', frame);
+    }
+
+    this.stompClient.activate();
   }
 
 
@@ -78,7 +97,7 @@ export class CompetitionComponent {
       });
     });
     this.competitionsService.getCompetitors(this.competition.id).then((data) => {
-        this.subscribedCompetitors = data;
+      this.subscribedCompetitors = data;
     });
   }
 
@@ -89,6 +108,4 @@ export class CompetitionComponent {
       });
     });
   }
-
-
 }

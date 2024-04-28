@@ -6,11 +6,13 @@ import fr.wave.remotedemo.entity.FileEntity;
 import fr.wave.remotedemo.entity.TargetEntity;
 import fr.wave.remotedemo.repository.FileRepository;
 import fr.wave.remotedemo.repository.TargetRepository;
+import fr.wave.remotedemo.service.IWSService;
 import fr.wave.remotedemo.transformer.FileTransformer;
 import fr.wave.remotedemo.transformer.ImpactTransformer;
 import fr.wave.remotedemo.utils.EndpointsUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -26,6 +28,8 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public class CompetitionTargetResource {
 
+
+    private final IWSService wsService;
     private final TargetRepository targetRepository;
     private final FileRepository fileRepository;
     HashMap<Long, SseEmitter> sseMap = new HashMap<>();
@@ -55,7 +59,7 @@ public class CompetitionTargetResource {
                 .impacts(target.getImpacts().stream().map(ImpactTransformer::toEntity).collect(Collectors.toSet()))
                 .build();
         TargetEntity save = targetRepository.save(targetEntity);
-        sendUpdate(save, competitionId);
+        wsService.sendUpdateTargets(competitionId.toString(), save);
         return save;
     }
 
@@ -87,9 +91,6 @@ public class CompetitionTargetResource {
         targetRepository.deleteById(String.valueOf(id));
     }
 
-    @SendTo("update")
-    public TargetEntity sendUpdate(TargetEntity target, @DestinationVariable Long competitionId) {
-        return target;
-    }
+
 
 }
