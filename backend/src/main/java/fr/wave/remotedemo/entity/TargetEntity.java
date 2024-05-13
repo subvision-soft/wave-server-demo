@@ -34,4 +34,11 @@ public class TargetEntity {
     private String pictureId;
 
     private Event event;
+
+    private int shotsTooCloseCount;
+    private int badArrowExtractionsCount;
+    private int targetSheetNotTouchedCount;
+    private boolean departureSteal;
+    private boolean armedBeforeCountdown;
+    private boolean timeRanOut;
 }

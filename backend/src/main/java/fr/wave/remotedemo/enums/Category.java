@@ -1,24 +1,16 @@
 package fr.wave.remotedemo.enums;
 
 public enum Category {
-    MINIME(0),CADET(1),JUNIOR(2),SENIOR(3),MASTER(4);
+    MINIME("Minime"),CADET("Cadet"),JUNIOR("Junior"),SENIOR("Sénior"),MASTER("Master");
 
-    private final int id;
+    private final String name;
 
-    Category(int i) {
-        this.id = i;
+    Category(String name) {
+        this.name = name;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public static Category fromId(int id){
-        for(Category c : Category.values()){
-            if(c.getId() == id){
-                return c;
-            }
-        }
-        return null;
+    @Override
+    public String toString() {
+        return this.name;
     }
 }

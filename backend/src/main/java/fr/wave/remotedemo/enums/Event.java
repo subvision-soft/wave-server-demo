@@ -12,6 +12,11 @@ public enum Event {
         this.name = name;
     }
 
+    @Override
+    public String toString() {
+        return name;
+    }
+
     public static Event fromName(String name) {
         for (Event event : Event.values()) {
             if (event.name.equals(name)) {
