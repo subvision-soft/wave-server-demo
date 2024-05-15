@@ -24,4 +24,11 @@ public class TargetDTO {
     private Long id;
 
     private String pictureId;
+
+    private int shotsTooCloseCount;
+    private int badArrowExtractionsCount;
+    private int targetSheetNotTouchedCount;
+    private boolean departureSteal;
+    private boolean armedBeforeCountdown;
+    private boolean timeRanOut;
 }

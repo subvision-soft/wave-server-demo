@@ -3,8 +3,10 @@ package fr.wave.remotedemo.resource;
 import fr.wave.remotedemo.dto.FileDTO;
 import fr.wave.remotedemo.dto.UploadTargetDTO;
 import fr.wave.remotedemo.entity.FileEntity;
+import fr.wave.remotedemo.entity.ImpactEntity;
 import fr.wave.remotedemo.entity.TargetEntity;
 import fr.wave.remotedemo.repository.FileRepository;
+import fr.wave.remotedemo.repository.ImpactRepository;
 import fr.wave.remotedemo.repository.TargetRepository;
 import fr.wave.remotedemo.service.IWSService;
 import fr.wave.remotedemo.transformer.FileTransformer;
@@ -19,6 +21,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 
@@ -32,6 +35,7 @@ public class CompetitionTargetResource {
     private final IWSService wsService;
     private final TargetRepository targetRepository;
     private final FileRepository fileRepository;
+    private final ImpactRepository impactRepository;
     HashMap<Long, SseEmitter> sseMap = new HashMap<>();
 
     @GetMapping()
@@ -49,6 +53,8 @@ public class CompetitionTargetResource {
                 .data(bytes)
                 .build();
         FileEntity file = fileRepository.save(FileTransformer.toEntity(fileDTO));
+
+
         TargetEntity targetEntity = TargetEntity.builder()
                 .time(target.getTime())
                 .date(target.getDate())
@@ -56,9 +62,16 @@ public class CompetitionTargetResource {
                 .competitorId(target.getUserId())
                 .pictureId(file.getId())
                 .event(target.getEvent())
-                .impacts(target.getImpacts().stream().map(ImpactTransformer::toEntity).collect(Collectors.toSet()))
+                .shotsTooCloseCount(target.getShotsTooCloseCount())
+                .badArrowExtractionsCount(target.getBadArrowExtractionsCount())
+                .targetSheetNotTouchedCount(target.getTargetSheetNotTouchedCount())
+                .departureSteal(target.isDepartureSteal())
+                .armedBeforeCountdown(target.isArmedBeforeCountdown())
+                .timeRanOut(target.isTimeRanOut())
                 .build();
         TargetEntity save = targetRepository.save(targetEntity);
+        List<ImpactEntity> impactsEntities = target.getImpacts().stream().map(ImpactTransformer::toEntity).peek(impactEntity -> impactEntity.setTargetId(save.getId())).collect(Collectors.toList());
+        impactRepository.saveAll(impactsEntities);
         wsService.sendUpdateTargets(competitionId.toString(), save);
         return save;
     }

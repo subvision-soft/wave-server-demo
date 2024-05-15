@@ -2,9 +2,7 @@ package fr.wave.remotedemo.entity;
 
 
 import fr.wave.remotedemo.enums.Zone;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
@@ -25,6 +23,7 @@ public class ImpactEntity {
 
     private Long targetId;
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
 }

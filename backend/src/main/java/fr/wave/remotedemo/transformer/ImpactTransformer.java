@@ -20,11 +20,11 @@ public class ImpactTransformer {
     public static ImpactEntity toEntity(ImpactDTO dto) {
         return ImpactEntity.builder()
                 .id(dto.getId())
-                .targetId(dto.getTargetId())
                 .zone(dto.getZone())
                 .score(dto.getScore())
                 .distance(dto.getDistance())
                 .angle(dto.getAngle())
+                .targetId(dto.getTargetId())
                 .amount(dto.getAmount())
                 .build();
     }

@@ -35,6 +35,7 @@ public class TargetEntity {
 
     private Event event;
 
+
     private int shotsTooCloseCount;
     private int badArrowExtractionsCount;
     private int targetSheetNotTouchedCount;

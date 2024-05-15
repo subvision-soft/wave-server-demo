@@ -28,4 +28,10 @@ public class UploadTargetDTO {
     private List<ImpactDTO> impacts;
 
     private Event event;
+    private int shotsTooCloseCount;
+    private int badArrowExtractionsCount;
+    private int targetSheetNotTouchedCount;
+    private boolean departureSteal;
+    private boolean armedBeforeCountdown;
+    private boolean timeRanOut;
 }

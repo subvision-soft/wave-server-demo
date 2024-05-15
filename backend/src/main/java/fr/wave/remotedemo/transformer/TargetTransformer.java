@@ -17,6 +17,12 @@ public class TargetTransformer {
                 .userId(entity.getCompetitorId())
                 .pictureId(entity.getPictureId())
                 .event(entity.getEvent())
+                .targetSheetNotTouchedCount(entity.getTargetSheetNotTouchedCount())
+                .shotsTooCloseCount(entity.getShotsTooCloseCount())
+                .badArrowExtractionsCount(entity.getBadArrowExtractionsCount())
+                .departureSteal(entity.isDepartureSteal())
+                .armedBeforeCountdown(entity.isArmedBeforeCountdown())
+                .timeRanOut(entity.isTimeRanOut())
                 .build();
     }
 
@@ -29,6 +35,13 @@ public class TargetTransformer {
                 .competitorId(dto.getUserId())
                 .pictureId(dto.getPictureId())
                 .event(dto.getEvent())
+                .shotsTooCloseCount(dto.getShotsTooCloseCount())
+                .badArrowExtractionsCount(dto.getBadArrowExtractionsCount())
+                .targetSheetNotTouchedCount(dto.getTargetSheetNotTouchedCount())
+                .departureSteal(dto.isDepartureSteal())
+                .armedBeforeCountdown(dto.isArmedBeforeCountdown())
+                .timeRanOut(dto.isTimeRanOut())
+
                 .build();
     }
     public static TargetEntity toEntity(UploadTargetDTO dto, String pictureId) {
@@ -41,6 +54,12 @@ public class TargetTransformer {
                 .pictureId(pictureId)
                 .impacts(dto.getImpacts().stream().map(ImpactTransformer::toEntity).collect(Collectors.toSet()))
                 .event(dto.getEvent())
+                .shotsTooCloseCount(dto.getShotsTooCloseCount())
+                .badArrowExtractionsCount(dto.getBadArrowExtractionsCount())
+                .targetSheetNotTouchedCount(dto.getTargetSheetNotTouchedCount())
+                .departureSteal(dto.isDepartureSteal())
+                .armedBeforeCountdown(dto.isArmedBeforeCountdown())
+                .timeRanOut(dto.isTimeRanOut())
                 .build();
     }
 }
