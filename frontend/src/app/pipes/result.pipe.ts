@@ -37,8 +37,6 @@ const MAX_SHOTS_PENALTY = 5;
 })
 export class ResultPipe implements PipeTransform {
 
-  private time: number = 0;
-
   transform(value: TargetModel): number {
     return this.total(value);
   }
@@ -100,56 +98,73 @@ export class ResultPipe implements PipeTransform {
   }
 
 
+
   calculateScoreBiathlon(target: TargetModel): number {
-    let score = 0;
-    let bestImpacts: ImpactModel[] = [];
-
-    // Calculer le score pour chaque impact et garder les 3 meilleurs
-    for (const impact of target.impacts) {
-      score += impact.score;
-      if (bestImpacts.length < 3) {
-        bestImpacts.push(impact);
-      } else if (impact.score > bestImpacts[0].score) {
-        bestImpacts[0] = impact;
-        bestImpacts.sort((a, b) => a.score - b.score);
-      }
+    let impacts = [...target.impacts.sort((a, b) => b.score - a.score)];
+    // En cas de dépassement du temps, le plus mauvais tir sera refusé.
+    if (target.time > 600000) {
+      console.log('pop impact time ran out');
+      impacts.pop();
     }
 
-    // Retirer les impacts supplémentaires si plus de 3 impacts sur le plastron ou plus de 3 tirs
-    if (target.shotsTooCloseCount > 3 || target.impacts.length > 3) {
-      for (const impact of bestImpacts.slice(3)) {
-        score -= impact.score;
-      }
-    }
-
-    // Retirer les impacts supplémentaires si plus d'un impact sur le même visuel
-    const impactsByVisual: { [key in ZoneEnum]: ImpactModel[] } = {
-      [ZoneEnum.TOP_LEFT]: [],
-      [ZoneEnum.TOP_RIGHT]: [],
-      [ZoneEnum.BOTTOM_LEFT]: [],
-      [ZoneEnum.BOTTOM_RIGHT]: [],
-      [ZoneEnum.CENTER]: [],
-      [ZoneEnum.UNDEFINED]: []
-    };
-    for (const impact of target.impacts) {
-      if (!impactsByVisual[impact.zone]) {
-        impactsByVisual[impact.zone] = [];
-      }
-      impactsByVisual[impact.zone].push(impact);
-    }
-    for (const impacts of Object.values(impactsByVisual)) {
-      if (impacts.length > 1) {
-        for (const impact of impacts.slice(1)) {
-          score -= impact.score;
+    // Si plus de 3 impacts sont relevés sur le plastron, le score sera amputé du ou des meilleurs impacts
+    // supplémentaires.
+    // Si plus de 3 tirs (déclenchements) sont comptabilisés, le score sera amputé du ou des meilleurs
+    // impacts supplémentaires.
+    if (target.impacts.length > 3) {
+      let impactsByZone = this.getImpactsByZone(impacts);
+      let numberToRemove = target.impacts.length - 3;
+      while (numberToRemove > 0) {
+        debugger
+        if (this.hasImpactOnSameVisual(impactsByZone)) {
+          //check the impact with highest score is in the same visual
+          impacts.forEach((impact) => {
+            if (impactsByZone[impact.zone].length > 1 && numberToRemove > 0) {
+              impacts.shift();
+              impactsByZone[impact.zone].shift();
+              numberToRemove--;
+            }
+          });
+        } else {
+          impacts.shift();
+          numberToRemove--;
         }
       }
     }
 
+    //Si plus de 1 impact est relevé sur le même visuel, seul le meilleur impact sera retenu.
+    let impactsByZone = this.getImpactsByZone(impacts);
+    while (this.hasImpactOnSameVisual(impactsByZone)) {
+
+      Object.values(impactsByZone).forEach((impacts) => {
+        while (impacts.length > 1) {
+          console.log('pop impact meme visuel');
+          impacts.pop();
+        }
+      }
+      );
+
+      // impacts.forEach((impact) => {
+      //   while (impactsByZone[impact.zone].length > 1) {
+      //     console.log('pop impact meme visuel');
+      //     impacts.pop();
+      //     impactsByZone[impact.zone].pop();
+      //   }
+      // });
+    }
+    impacts = [];
+    Object.values(impactsByZone).forEach((listImpacts) => {
+      listImpacts.forEach((impact) => {
+        impacts.push(impact);
+      });
+    });
+
+
+    //Calculer le score
+    let score = impacts.reduce((sum, impact) => sum + impact.score, 0);
+
     // Appliquer les pénalités
     let penalties = 0;
-    if (target.time > 600000) {
-      penalties += PenaltyType.TIME_RAN_OUT;
-    }
     if (target.departureSteal) {
       penalties += PenaltyType.DEPARTURE_STEAL;
     }
@@ -163,12 +178,34 @@ export class ResultPipe implements PipeTransform {
     penalties += target.targetSheetNotTouchedCount * PenaltyType.TARGET_SHEET_NOT_TOUCHED;
     // Time from milliseconds to seconds
     let time = (target.time - (target.time % 1000)) / 1000;
-    console.log(`Math.max(0, ${score} - (${time} * 2) * 3)`, Math.max(0, score - (time * 2) * 3));
-    // Calculer le score final
-    const timeScore = Math.max(0, (score - (time * 2)) * 3);
-    const finalScore = Math.max(0, timeScore - penalties);
+    return this.getScoreBiathlon(time, score, penalties);
+  }
 
-    return finalScore;
+  getScoreBiathlon(time:number,score:number,penalties:number):number{
+    console.log('getScoreBiathlon',time,score,penalties);
+    let timeScore = Math.max(0, (score - (time * 2)) * 3);
+    return Math.max(0, timeScore - penalties);
+  }
+
+    getImpactsByZone(impacts: ImpactModel[]): { [key in ZoneEnum]: ImpactModel[] } {
+    const impactsByVisual: { [key in ZoneEnum]: ImpactModel[] } = {
+      [ZoneEnum.TOP_LEFT]: [],
+      [ZoneEnum.TOP_RIGHT]: [],
+      [ZoneEnum.BOTTOM_LEFT]: [],
+      [ZoneEnum.BOTTOM_RIGHT]: [],
+      [ZoneEnum.CENTER]: [],
+      [ZoneEnum.UNDEFINED]: []
+    };
+    for (const impact of impacts) {
+      if (!impactsByVisual[impact.zone]) {
+        impactsByVisual[impact.zone] = [];
+      }
+      impactsByVisual[impact.zone].push(impact);
+    }
+    for (const impacts of Object.values(impactsByVisual)) {
+      impacts.sort((a, b) => b.score - a.score);
+    }
+    return impactsByVisual;
   }
 
 
@@ -273,5 +310,17 @@ export class ResultPipe implements PipeTransform {
       zones[impact.zone].push(impact);
     });
     return Object.values(zones).every((zone) => zone.length <= 1);
+  }
+
+  private hasImpactOnSameVisual(impactsByZone: {
+    TOP_LEFT: ImpactModel[];
+    TOP_RIGHT: ImpactModel[];
+    BOTTOM_LEFT: ImpactModel[];
+    BOTTOM_RIGHT: ImpactModel[];
+    CENTER: ImpactModel[];
+    UNDEFINED?: ImpactModel[]
+  }) {
+    delete impactsByZone.UNDEFINED;
+    return Object.values(impactsByZone).some((zone) => zone.filter((impact) => impact.score).length > 1);
   }
 }

@@ -59,7 +59,7 @@ describe('ResultPipe', () => {
     const pipe = new ResultPipe();
     expect(pipe).toBeTruthy();
   });
-  it('should return 0 if time is higher than 10 minutes', () => {
+  it('should return 0 if time is higher than 10 minutes super biathlon', () => {
     const pipe = new ResultPipe();
     const target:TargetModel = getTarget();
     target.impacts = get5ValidImpacts();
@@ -67,6 +67,22 @@ describe('ResultPipe', () => {
     expect(pipe.transform(target)).toBe(0);
     target.time = 600000;
     expect(pipe.transform(target)).toBe(3479);
+  });
+  it('should remove worst shot if time is higher than 10 minutes biathlon', () => {
+    const pipe = new ResultPipe();
+    const target:TargetModel = getTarget();
+    target.event = EventEnum.BIATHLON;
+    target.impacts = get3ValidImpacts();
+    target.time = 600001;
+    let scoreCible = 471 * 2;
+    let tempsSeconde = 600;
+    let score =pipe.getScoreBiathlon(tempsSeconde,scoreCible,0) ;
+    expect(pipe.transform(target)).toBe(score);
+    target.time = 120000;
+    scoreCible = 471 * 3;
+    tempsSeconde = 120;
+    score =pipe.getScoreBiathlon(tempsSeconde,scoreCible,0) ;
+    expect(pipe.transform(target)).toBe(score);
   });
   it('should return 0 if 0 impacts for super biathlon', () => {
     const pipe = new ResultPipe();
@@ -91,6 +107,20 @@ describe('ResultPipe', () => {
     let expected = (471*3 - (time * 2)) * 3;
     expect(pipe.transform(target)).toBe(expected);
   });
+
+  it('should keep best impact if multiple in zone ', () => {
+    const pipe = new ResultPipe();
+    const target:TargetModel = getTarget();
+    target.event = EventEnum.BIATHLON;
+    target.impacts.push(getValidImpact(ZoneEnum.BOTTOM_RIGHT,474));
+    target.impacts.push(getValidImpact(ZoneEnum.BOTTOM_RIGHT,471));
+    target.impacts.push(getValidImpact(ZoneEnum.CENTER,471));
+    let time = 140;
+    target.time = time * 1000;
+    let expected = pipe.getScoreBiathlon(time,471 + 474,0);
+    expect(pipe.transform(target)).toBe(expected);
+  });
+
   it ('should remove 50 points for each penalty biathlon', () => {
 
       const pipe = new ResultPipe();
@@ -116,6 +146,7 @@ describe('ResultPipe', () => {
     target.event = EventEnum.PRECISION;
     expect(pipe.transform(target)).toBe(0);
   });
+
 
 
 
