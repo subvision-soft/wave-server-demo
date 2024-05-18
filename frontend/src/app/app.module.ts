@@ -13,7 +13,6 @@ import {TargetsService} from "./services/targets.service";
     BrowserModule,
     AppRoutingModule,
     NgxWaveUiModule,
-
   ],
   providers: [
     TargetsService

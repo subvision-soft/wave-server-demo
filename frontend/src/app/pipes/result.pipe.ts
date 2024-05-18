@@ -10,6 +10,7 @@ enum PenaltyType {
   ARMED_BEFORE_COUNTDOWN = 50,
   BAD_ARROW_EXTRACTION = 50,
   TARGET_SHEET_NOT_TOUCHED = 50,
+  SHOTS_TOO_CLOSE = 50
 }
 
 class SuperBiathlonParameters {
@@ -146,7 +147,7 @@ export class ResultPipe implements PipeTransform {
 
     // Appliquer les pénalités
     let penalties = 0;
-    if (target.timeRanOut) {
+    if (target.time > 600000) {
       penalties += PenaltyType.TIME_RAN_OUT;
     }
     if (target.departureSteal) {
@@ -154,6 +155,9 @@ export class ResultPipe implements PipeTransform {
     }
     if (target.armedBeforeCountdown) {
       penalties += PenaltyType.ARMED_BEFORE_COUNTDOWN;
+    }
+    if (target.shotsTooCloseCount) {
+      penalties += PenaltyType.SHOTS_TOO_CLOSE;
     }
     penalties += target.badArrowExtractionsCount * PenaltyType.BAD_ARROW_EXTRACTION;
     penalties += target.targetSheetNotTouchedCount * PenaltyType.TARGET_SHEET_NOT_TOUCHED;
@@ -175,39 +179,48 @@ export class ResultPipe implements PipeTransform {
     const isQualif = false;
     let motifsDisqualification:string[] = [];
     let time = (target.time-(target.time%1000))/1000;
+    console.log("Time : ", time);
     if (!isQualif) {
-      // Le compétiteur doit effectuer ses 5 tirs dans la cible
-      if (target.impacts.length === SuperBiathlonParameters.NUMBER_OF_IMPACTS) {
-        if (!this.hasHorsPlastron(target)) {
-          // Son parcours est validé si et seulement si tous les visuels comprennent au maximum 1 impact
-          if (!this.has1ImpactMaxPerZone(target)) {
-            motifsDisqualification.push("Plus d'un impact par visuel");
-          }
-          // 3 visuels ont un impact compris dans les zones des (570 à 471). (Contrat cible)
-          if (!this.has3ImpactsInContrat(target)) {
-            motifsDisqualification.push("Nombre d'impacts dans le contrat insuffisant");
-          }
-          timeBonus = ResultPipe.getTimeBonus(this.getValidImpactsSuperBiathlon(target).length);
-        } else {
-          motifsDisqualification.push("Hors plastron");
-        }
+      if (target.time > 600000) {
+        motifsDisqualification.push("Temps supérieur à 10 minutes");
       } else {
-        if (target.impacts.length < SuperBiathlonParameters.NUMBER_OF_IMPACTS) {
-          motifsDisqualification.push("Nombre de tirs insuffisant");
+        // Le compétiteur doit effectuer ses 5 tirs dans la cible
+        if (target.impacts.length === SuperBiathlonParameters.NUMBER_OF_IMPACTS) {
+          if (!this.hasHorsPlastron(target)) {
+            // Son parcours est validé si et seulement si tous les visuels comprennent au maximum 1 impact
+            if (!this.has1ImpactMaxPerZone(target)) {
+              motifsDisqualification.push("Plus d'un impact par visuel");
+            }
+            // 3 visuels ont un impact compris dans les zones des (570 à 471). (Contrat cible)
+            if (!this.has3ImpactsInContrat(target)) {
+              motifsDisqualification.push("Nombre d'impacts dans le contrat insuffisant");
+            }
+
+            timeBonus = ResultPipe.getTimeBonus(this.getValidImpactsSuperBiathlon(target).length);
+          } else {
+            motifsDisqualification.push("Hors plastron");
+          }
         } else {
-          motifsDisqualification.push("Nombre de tirs trop élevé");
+          if (target.impacts.length < SuperBiathlonParameters.NUMBER_OF_IMPACTS) {
+            motifsDisqualification.push("Nombre de tirs insuffisant");
+          } else {
+            motifsDisqualification.push("Nombre de tirs trop élevé");
+          }
         }
       }
+
     }
     if (motifsDisqualification.length > 0) {
       console.log("Disqualification pour les motifs suivants : ", motifsDisqualification);
       return 0;
     }
+    console.log(`this.calculateScoreSuperBiathlon(${time} + ${timePenalty} - ${timeBonus})`, this.calculateScoreSuperBiathlon(time + timePenalty - timeBonus));
     return this.calculateScoreSuperBiathlon(time + timePenalty - timeBonus);
   }
 
   private static getTimeBonus(numberOfValidImpacts: number) {
-    return numberOfValidImpacts - SuperBiathlonParameters.MIN_NUMBER_VALID_IMPACTS * SuperBiathlonParameters.BASE_TIME_BONUS;
+    console.log('getTimeBonus, numberOfValidImpacts : ', numberOfValidImpacts)
+    return (numberOfValidImpacts - SuperBiathlonParameters.MIN_NUMBER_VALID_IMPACTS) * SuperBiathlonParameters.BASE_TIME_BONUS;
   }
 
   private getTimePenalty(target: TargetModel) {
@@ -237,6 +250,7 @@ export class ResultPipe implements PipeTransform {
 
   calculateScoreSuperBiathlon(time:number):number {
     const referenceTime = 90;
+    console.log(`Math.max(0, 5000 + 3 * (${referenceTime} - ${time}))`, Math.max(0, 5000 + 3 * (referenceTime - time)));
     return Math.max(0, 5000 + 3 * (referenceTime - time));
   }
 
