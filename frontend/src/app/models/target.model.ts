@@ -2,13 +2,21 @@ import {EventEnum} from "./event.enum";
 import {ImpactModel} from "./impact.model";
 
 export interface TargetModel {
-   time:number;
-   date:Date;
-   competitionId:number;
-   competitorId:number;
-   teamId:number;
-   event:EventEnum;
-   id: number;
-   pictureId: string;
-    impacts: ImpactModel[];
+  id: number;
+  pictureId: number;
+  competitionId: number;
+  impacts: ImpactModel[];
+  event: EventEnum;
+  total: number;
+  time: number;
+  date: Date;
+  competitorId: number;
+  user: string;
+  image: string;
+  shotsTooCloseCount: number;
+  badArrowExtractionsCount: number;
+  targetSheetNotTouchedCount: number;
+  departureSteal: boolean;
+  armedBeforeCountdown: boolean;
+  timeRanOut: boolean;
 }
