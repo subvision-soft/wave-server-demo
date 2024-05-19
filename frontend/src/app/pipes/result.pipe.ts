@@ -115,7 +115,6 @@ export class ResultPipe implements PipeTransform {
       let impactsByZone = this.getImpactsByZone(impacts);
       let numberToRemove = target.impacts.length - 3;
       while (numberToRemove > 0) {
-        debugger
         if (this.hasImpactOnSameVisual(impactsByZone)) {
           //check the impact with highest score is in the same visual
           impacts.forEach((impact) => {

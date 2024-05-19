@@ -4,6 +4,7 @@ import {CompetitionModel} from "../../../../models/competition.model";
 import {FormControl, FormGroup} from '@angular/forms';
 import {Router} from "@angular/router";
 import {jamPlus, jamTrash} from '@ng-icons/jam-icons';
+import {MenuItem} from "primeng/api";
 
 @Component({
   selector: 'app-competitions',
@@ -12,7 +13,8 @@ import {jamPlus, jamTrash} from '@ng-icons/jam-icons';
   styleUrl: './competitions.component.scss'
 })
 export class CompetitionsComponent {
-
+  items!: MenuItem[];
+  selectedCompetition: CompetitionModel;
   competitions: CompetitionModel[] = [];
   competitionForm: FormGroup = new FormGroup({
     name: new FormControl(''),
@@ -25,6 +27,11 @@ export class CompetitionsComponent {
 
   constructor(private competitionService: CompetitionsService, private router: Router) {
     this.loadCompetitions();
+
+    this.items = [
+      { label: 'View', icon: 'pi pi-eye', command: () => this.openCompetition(this.selectedCompetition.id) },
+      { label: 'Delete', icon: 'pi pi-trash', command: () => this.deleteCompetition(this.selectedCompetition.id) }
+    ];
   }
 
 
@@ -45,8 +52,7 @@ export class CompetitionsComponent {
     this.router.navigate(['/competitions', id]);
   }
 
-  deleteCompetition(id: any, $event: Event) {
-    $event.stopPropagation();
+  deleteCompetition(id: any) {
     this.competitionService.delete(id).then(response => {
       this.loadCompetitions();
     });

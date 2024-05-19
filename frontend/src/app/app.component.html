@@ -1,16 +1,8 @@
 
-<wave-card class="menu">
-  <wave-button (click)="collapsed = !collapsed" class="collapse-button" [icon]="jamMenu"></wave-button>
-  <wave-menu direction="column" [collapsed]="collapsed" [items]="menuItems">
-  </wave-menu>
-</wave-card>
-<div class="page-content">
-
-  <wave-card>
-
-  </wave-card>
-  <wave-card class="router-outlet">
-
+  <p-menu class="flex" [model]="menuItems"></p-menu>
+<!--  <p-button (click)="collapsed = !collapsed" class="collapse-button" [icon]="jamMenu"></p-button>-->
+<!--  <wave-menu direction="column" [collapsed]="collapsed" [items]="menuItems">-->
+<!--  </wave-menu>-->
+  <p-panel class="flex flex-1">
     <router-outlet></router-outlet>
-  </wave-card>
-</div>
+  </p-panel>

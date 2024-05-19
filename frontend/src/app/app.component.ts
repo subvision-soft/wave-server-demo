@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import {MenuItemModel} from "ngx-wave-ui";
 import {Paths} from "./statics/Paths";
 import {jamHome, jamUsers, jamFlag, jamMenu} from "@ng-icons/jam-icons";
+import {MenuItem} from "primeng/api";
 
 @Component({
   selector: 'app-root',
@@ -10,21 +10,24 @@ import {jamHome, jamUsers, jamFlag, jamMenu} from "@ng-icons/jam-icons";
 })
 export class AppComponent {
   title = 'frontend';
-  menuItems: MenuItemModel[] = [
+  menuItems: MenuItem[] = [
     {
-      title: 'Home',
-      route: '/' + Paths.HOME,
-      icon:jamHome
+      label: 'Home',
+      icon: 'pi pi-home',
+      routerLink: '/' + Paths.HOME,
+      // icon:jamHome
     },
     {
-      title: 'Users',
-      route: '/' + Paths.USERS,
-      icon:jamUsers
+      label: 'Users',
+      icon: 'pi pi-users',
+      routerLink: '/' + Paths.USERS,
+      // icon:jamUsers
     },
     {
-      title: 'Competitions',
-      route: '/competitions',
-      icon:jamFlag
+      label: 'Competitions',
+      icon: 'pi pi-flag',
+      routerLink: '/competitions',
+      // icon:jamFlag
     }
   ];
 

@@ -1,5 +1,4 @@
 /* You can add global styles to this file, and also import other style files */
-@import "../node_modules/ngx-wave-ui/assets/styles/styles.scss";
 
 html, body {
   height: 100%;
@@ -16,48 +15,6 @@ app-root {
 }
 
 
-table {
-  width: 100%;
-  border-spacing: 0 var(--spacing-8);
-  td {
-    transition: var(--transition-fast);
-    background-color: var(--color-background-1);
-    padding: var(--spacing-8);
-    &:first-child {
-      border-top-left-radius: var(--border-radius-l);
-      border-bottom-left-radius: var(--border-radius-l);
-    }
-    &:last-child {
-      border-top-right-radius: var(--border-radius-l);
-      border-bottom-right-radius: var(--border-radius-l);
-    }
-
-  }
-
-  tbody tr {
-    border-radius: var(--border-radius-l);
-    box-shadow: 0 0 0px  rgba(0, 0, 0, 0);
-    &:hover {
-      box-shadow: var(--box-shadow-1);
-    }
-    cursor: pointer;
-  }
-
-  th {
-    background-color: var(--color-background-2);
-    padding: var(--spacing-8);
-    @include text(m,true);
-    color: var(--color-primary-600);
-    text-align: left;
-    &:first-child {
-      border-top-left-radius: var(--border-radius-l);
-      border-bottom-left-radius: var(--border-radius-l);
-    }
-    &:last-child {
-      border-top-right-radius: var(--border-radius-l);
-      border-bottom-right-radius: var(--border-radius-l);
-    }
-  }
 
 
-}
+

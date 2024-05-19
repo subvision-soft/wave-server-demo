@@ -1,40 +1,31 @@
-<form [formGroup]="competitionForm" (ngSubmit)="submit()">
+<form [formGroup]="competitionForm" (ngSubmit)="submit()" class="flex flex-column gap-1">
+  <div class="flex-row flex gap-1">
+    <input pInputText required type="text" formControlName="name" placeholder="Name">
+    <input pInputText required type="text" formControlName="description" placeholder="Description">
+    <p-calendar formControlName="date" [showIcon]="true"  [timeOnly]="false"></p-calendar>
+    <p-button  icon="pi pi-plus" type="submit"></p-button>
+  </div>
+  <p-contextMenu #cm [model]="items" />
+  <p-table [contextMenu]="cm" [(contextMenuSelection)]="selectedCompetition"  [value]="competitions" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5,10,20]">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Nom</th>
+        <th>Description</th>
+        <th>Date</th>
+        <th></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-competition>
+      <tr>
+        <td>{{ competition.name }}</td>
+        <td>{{ competition.description }}</td>
+        <td>{{ competition.date }}</td>
+        <td>
+          <p-button [text]="true" [rounded]="true" icon="pi pi-eye" (click)="openCompetition(competition.id)"></p-button>
+          <p-button severity="danger"  [text]="true" [rounded]="true" icon="pi pi-trash" (click)="deleteCompetition(competition.id)"></p-button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
 
-  <table>
-    <thead>
-    <tr>
-      <th>Name</th>
-      <th>Description</th>
-      <th>Date</th>
-      <th></th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let competition of competitions" (click)="openCompetition(competition.id)">
-      <td>{{ competition.name }}</td>
-      <td>{{ competition.description }}</td>
-      <td>{{ competition.date }}</td>
-      <td>
-        <button type="button" (click)="deleteCompetition(competition.id,$event)">
-          <ng-icon [svg]="jamTrash">
-          </ng-icon>
-        </button>
-      </td>
-    </tr>
-
-    <tr>
-      <td><input required type="text" formControlName="name" placeholder="Name"></td>
-      <td><input required type="text" formControlName="description" placeholder="Description"></td>
-      <td><input required type="date" formControlName="date" placeholder="Date"></td>
-      <td>
-        <button type="submit">
-          <ng-icon [svg]="jamPlus">
-          </ng-icon>
-        </button>
-      </td>
-    </tr>
-
-
-    </tbody>
-  </table>
 </form>
