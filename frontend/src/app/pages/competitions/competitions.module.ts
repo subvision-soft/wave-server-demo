@@ -13,6 +13,7 @@ import {ContextMenuModule} from "primeng/contextmenu";
 import {PanelModule} from "primeng/panel";
 import {InputTextModule} from "primeng/inputtext";
 import {CalendarModule} from "primeng/calendar";
+import {ResultPipe} from "../../pipes/result.pipe";
 
 
 
@@ -36,7 +37,8 @@ import {CalendarModule} from "primeng/calendar";
     ContextMenuModule,
     PanelModule,
     InputTextModule,
-    CalendarModule
+    CalendarModule,
+    ResultPipe
   ]
 })
 export class CompetitionsModule { }

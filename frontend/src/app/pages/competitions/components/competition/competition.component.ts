@@ -8,7 +8,18 @@ import {jamMinus, jamPlus} from '@ng-icons/jam-icons';
 import {TargetModel} from "../../../../models/target.model";
 import {Paths} from "../../../../statics/Paths";
 import {Client} from '@stomp/stompjs';
+import {EventEnum} from "../../../../models/event.enum";
+import {ResultPipe} from "../../../../pipes/result.pipe";
+interface Column {
+  field: string;
+  header: string;
+  customExportHeader?: string;
+}
 
+interface ExportColumn {
+  title: string;
+  dataKey: string;
+}
 @Component({
   selector: 'app-competition',
 
@@ -23,6 +34,26 @@ export class CompetitionComponent {
 
   targets: TargetModel[];
 
+
+  cols: Column[] = [
+    { field: 'competitorId', header: 'Compétiteur' },
+    { field: 'total', header: 'Score' },
+  ];
+  exportColumns: ExportColumn[] = this.cols.map((col) => {
+    return {
+      title: col.customExportHeader || col.header,
+        dataKey
+    :
+      col.field,
+    }
+  });
+
+
+  targetsByEvent: {
+    event:EventEnum,
+    targets: TargetModel[]
+  }[] = [];
+
   stompClient: Client;
 
   subscribedCompetitors: CompetitorModel[];
@@ -34,7 +65,8 @@ export class CompetitionComponent {
   constructor(
     private competitionsService: CompetitionsService,
     private route: ActivatedRoute,
-    private competitorsService: CompetitorsService
+    private competitorsService: CompetitorsService,
+    private resultPipe: ResultPipe,
   ) {
     const id = this.route.snapshot.paramMap.get('id');
     if (!id) {
@@ -74,6 +106,29 @@ export class CompetitionComponent {
   loadTargets() {
     this.competitionsService.getTargets(this.competition.id).then((data) => {
       this.targets = [...data];
+      this.targets.map((target) => {
+        target.total = this.resultPipe.transform(target);
+        return target;
+      }
+      );
+      this.targetsByEvent = [];
+      let events = this.targets.reduce((acc:{
+        [key: string]: TargetModel[]
+      }, target) => {
+        if (!acc[target.event]) {
+          acc[target.event] = [];
+        }
+        acc[target.event].push(target);
+        return acc;
+      }, {});
+
+      Object.entries(events).forEach(([key, value]) => {
+        events[key] = value.sort((a, b) =>b.total - a.total);
+        this.targetsByEvent.push({
+          event: key as EventEnum,
+          targets: value
+        });
+      });
     });
   }
 
@@ -108,4 +163,11 @@ export class CompetitionComponent {
       });
     });
   }
+
+  deleteTarget(target: any) {
+    this.competitionsService.deleteTarget(target.id,target.competitionId).then(() => {
+      this.loadTargets();
+    });
+  }
+
 }

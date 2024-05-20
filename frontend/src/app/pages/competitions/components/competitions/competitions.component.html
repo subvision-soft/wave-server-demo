@@ -19,7 +19,7 @@
       <tr>
         <td>{{ competition.name }}</td>
         <td>{{ competition.description }}</td>
-        <td>{{ competition.date }}</td>
+        <td>{{ competition.date|date }}</td>
         <td>
           <p-button [text]="true" [rounded]="true" icon="pi pi-eye" (click)="openCompetition(competition.id)"></p-button>
           <p-button severity="danger"  [text]="true" [rounded]="true" icon="pi pi-trash" (click)="deleteCompetition(competition.id)"></p-button>

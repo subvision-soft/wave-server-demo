@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import {LOCALE_ID, NgModule} from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -9,6 +9,12 @@ import { MenuModule } from 'primeng/menu';
 import { ButtonModule } from 'primeng/button';
 import {provideAnimations} from "@angular/platform-browser/animations";
 import {PanelModule} from "primeng/panel";
+import {registerLocaleData} from "@angular/common";
+import localeFr from '@angular/common/locales/fr';
+import {TranslateModule} from "@ngx-translate/core";
+import {ResultPipe} from "./pipes/result.pipe";
+import {ScrollPanelModule} from "primeng/scrollpanel";
+registerLocaleData(localeFr, 'fr');
 @NgModule({
   declarations: [
     AppComponent
@@ -19,10 +25,14 @@ import {PanelModule} from "primeng/panel";
     CardModule,
     MenuModule,
     PanelModule,
+    TranslateModule.forRoot(),
+    ScrollPanelModule
   ],
   providers: [
     TargetsService,
-    provideAnimations()
+    ResultPipe,
+    provideAnimations(),
+    {provide: LOCALE_ID, useValue: 'fr' }
   ],
   bootstrap: [AppComponent],
 })
