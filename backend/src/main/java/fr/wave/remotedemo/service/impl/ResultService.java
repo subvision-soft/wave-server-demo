@@ -6,10 +6,12 @@ import fr.wave.remotedemo.entity.TargetEntity;
 import fr.wave.remotedemo.enums.Event;
 import fr.wave.remotedemo.enums.Zone;
 import fr.wave.remotedemo.service.IResultService;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Service
 public class ResultService implements IResultService {
 
     public int getResult(TargetEntity target) {

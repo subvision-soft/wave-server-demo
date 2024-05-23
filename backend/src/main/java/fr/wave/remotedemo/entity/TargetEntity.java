@@ -35,6 +35,8 @@ public class TargetEntity {
 
     private Event event;
 
+    private int totalScore;
+
 
     private int shotsTooCloseCount;
     private int badArrowExtractionsCount;

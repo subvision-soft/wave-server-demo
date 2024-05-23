@@ -8,7 +8,9 @@ import fr.wave.remotedemo.entity.TargetEntity;
 import fr.wave.remotedemo.repository.FileRepository;
 import fr.wave.remotedemo.repository.ImpactRepository;
 import fr.wave.remotedemo.repository.TargetRepository;
+import fr.wave.remotedemo.service.IResultService;
 import fr.wave.remotedemo.service.IWSService;
+import fr.wave.remotedemo.service.impl.ResultService;
 import fr.wave.remotedemo.transformer.FileTransformer;
 import fr.wave.remotedemo.transformer.ImpactTransformer;
 import fr.wave.remotedemo.utils.EndpointsUtils;
@@ -21,6 +23,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
@@ -36,6 +39,7 @@ public class CompetitionTargetResource {
     private final TargetRepository targetRepository;
     private final FileRepository fileRepository;
     private final ImpactRepository impactRepository;
+    private final IResultService resultService;
     HashMap<Long, SseEmitter> sseMap = new HashMap<>();
 
     @GetMapping()
@@ -72,6 +76,14 @@ public class CompetitionTargetResource {
         TargetEntity save = targetRepository.save(targetEntity);
         List<ImpactEntity> impactsEntities = target.getImpacts().stream().map(ImpactTransformer::toEntity).peek(impactEntity -> impactEntity.setTargetId(save.getId())).collect(Collectors.toList());
         impactRepository.saveAll(impactsEntities);
+
+        Optional<TargetEntity> byId = targetRepository.findById(String.valueOf(save.getId()));
+        if (byId.isPresent()) {
+            TargetEntity targetEntity1 = byId.get();
+            targetEntity1.setTotalScore(resultService.getResult(targetEntity1));
+            targetRepository.save(targetEntity1);
+        }
+
         wsService.sendUpdateTargets(competitionId.toString(), save);
         return save;
     }
