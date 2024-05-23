@@ -7,10 +7,7 @@ import fr.wave.remotedemo.enums.Event;
 import fr.wave.remotedemo.enums.Zone;
 import fr.wave.remotedemo.service.IResultService;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ResultService implements IResultService {
@@ -101,16 +98,14 @@ public class ResultService implements IResultService {
             while (numberToRemove > 0) {
                 if (this.hasImpactOnSameVisual(impactsByZone)) {
                     //check the impact with highest score is in the same visual
-
-                    for (ImpactEntity impact : impacts) {
+                    List<ImpactEntity> impactsCopy = new ArrayList<>(impacts);
+                    for (ImpactEntity impact : impactsCopy) {
                         if (impactsByZone.get(impact.getZone()).size() > 1 && numberToRemove > 0) {
                             impacts.removeFirst();
                             impactsByZone.get(impact.getZone()).removeFirst();
                             numberToRemove--;
                         }
                     }
-
-
                 } else {
                     impacts.removeFirst();
                     numberToRemove--;
@@ -123,19 +118,9 @@ public class ResultService implements IResultService {
         while (this.hasImpactOnSameVisual(impactsByZone)) {
             impactsByZone.values().forEach((impactsList) -> {
                 while (impactsList.size() > 1) {
-                    System.out.println("pop impact meme visuel");
-                    impactsList.removeFirst();
+                    impactsList.removeLast();
                 }
             });
-
-
-            // impacts.forEach((impact) => {
-            //   while (impactsByZone[impact.zone].length > 1) {
-            //     console.log('pop impact meme visuel');
-            //     impacts.pop();
-            //     impactsByZone[impact.zone].pop();
-            //   }
-            // });
         }
         impacts = new ArrayList<>();
 
@@ -154,14 +139,15 @@ public class ResultService implements IResultService {
 
         // Time from milliseconds to seconds
         int time = (target.getTime() - (target.getTime() % 1000)) / 1000;
-        return this.getScoreBiathlon(time, score, penalties);
+        return getScoreBiathlon(time, score, penalties);
     }
 
-    int getScoreBiathlon(int time, int score, int penalties) {
+    public static int getScoreBiathlon(int time, int score, int penalties) {
 
         int timeScore = Math.max(0, (score - (time * 2)) * 3);
         return Math.max(0, timeScore - penalties);
     }
+
 
     HashMap<Zone, List<ImpactEntity>> getImpactsByZone(List<ImpactEntity> impacts) {
         HashMap<Zone, List<ImpactEntity>> impactsByZone = new HashMap<>();
@@ -266,6 +252,9 @@ public class ResultService implements IResultService {
     private boolean hasOnlyOneImpactPerZone(List<ImpactEntity> validImpacts) {
         HashMap<Zone, List<ImpactEntity>> zones = new HashMap<>();
         validImpacts.forEach((impact) -> {
+            if (!zones.containsKey(impact.getZone())) {
+                zones.put(impact.getZone(), new ArrayList<>());
+            }
             zones.get(impact.getZone()).add(impact);
         });
         return zones.values().stream().allMatch((zone) -> zone.size() <= 1);

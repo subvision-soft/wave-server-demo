@@ -7,4 +7,6 @@ public interface IResultService {
     public int getResult(TargetEntity target);
 
 
+
+
 }
