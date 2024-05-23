@@ -4,7 +4,7 @@ import {CompetitionModel} from "../../../../models/competition.model";
 import {FormControl, FormGroup} from '@angular/forms';
 import {Router} from "@angular/router";
 import {jamPlus, jamTrash} from '@ng-icons/jam-icons';
-import {MenuItem} from "primeng/api";
+import {ConfirmationService, MenuItem, MessageService} from "primeng/api";
 
 @Component({
   selector: 'app-competitions',
@@ -25,7 +25,10 @@ export class CompetitionsComponent {
   jamTrash = jamTrash;
 
 
-  constructor(private competitionService: CompetitionsService, private router: Router) {
+  constructor(private competitionService: CompetitionsService,
+              private router: Router,
+              private confirmationService: ConfirmationService,
+              private messageService: MessageService) {
     this.loadCompetitions();
 
     this.items = [
@@ -53,8 +56,20 @@ export class CompetitionsComponent {
   }
 
   deleteCompetition(id: any) {
-    this.competitionService.delete(id).then(response => {
-      this.loadCompetitions();
+    this.confirmationService.confirm({
+      message: 'Êtes-vous sûr de vouloir supprimer cette compétition ?',
+      accept: () => {
+        this.competitionService.delete(id).then(response => {
+          this.loadCompetitions();
+          this.messageService.add({severity: 'success', summary: 'Success', detail: 'Compétition supprimée'});
+        });
+      },
+      reject: () => {
+        this.messageService.add({severity: 'info', summary: 'Info', detail: 'Suppression annulée'});
+      }
     });
+
+
+
   }
 }

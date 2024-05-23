@@ -10,6 +10,7 @@ import {Paths} from "../../../../statics/Paths";
 import {Client} from '@stomp/stompjs';
 import {EventEnum} from "../../../../models/event.enum";
 import {ResultPipe} from "../../../../pipes/result.pipe";
+import {ConfirmationService, MessageService} from "primeng/api";
 interface Column {
   field: string;
   header: string;
@@ -67,6 +68,7 @@ export class CompetitionComponent {
     private route: ActivatedRoute,
     private competitorsService: CompetitorsService,
     private resultPipe: ResultPipe,
+    private confirmationService: ConfirmationService, private messageService: MessageService
   ) {
     const id = this.route.snapshot.paramMap.get('id');
     if (!id) {
@@ -140,8 +142,17 @@ export class CompetitionComponent {
   }
 
   removeCompetitor(competitor: CompetitorModel) {
-    this.competitionsService.removeCompetitor(this.competition.id, competitor.id).then(() => {
-      this.loadCompetitors();
+    this.confirmationService.confirm({
+      message: 'Êtes-vous sûr de vouloir supprimer ce compétiteur ?',
+      accept: () => {
+        this.competitionsService.removeCompetitor(this.competition.id, competitor.id).then(() => {
+          this.loadCompetitors();
+          this.messageService.add({severity:'success', summary:'Succès', detail:'Compétiteur supprimé'});
+        });
+      },
+      reject: () => {
+        this.messageService.add({severity:'info', summary:'Info', detail:'Suppression annulée'});
+      }
     });
   }
 
@@ -165,8 +176,18 @@ export class CompetitionComponent {
   }
 
   deleteTarget(target: any) {
-    this.competitionsService.deleteTarget(target.id,target.competitionId).then(() => {
-      this.loadTargets();
+
+    this.confirmationService.confirm({
+      message: 'Êtes-vous sûr de vouloir supprimer cette cible ?',
+      accept: () => {
+        this.competitionsService.deleteTarget(target.id,target.competitionId).then(() => {
+          this.loadTargets();
+          this.messageService.add({severity:'success', summary:'Succès', detail:'Cible supprimée'});
+        });
+      },
+      reject: () => {
+        this.messageService.add({severity:'info', summary:'Info', detail:'Suppression annulée'});
+      }
     });
   }
 

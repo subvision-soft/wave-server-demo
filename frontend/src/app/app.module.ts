@@ -14,6 +14,8 @@ import localeFr from '@angular/common/locales/fr';
 import {TranslateModule} from "@ngx-translate/core";
 import {ResultPipe} from "./pipes/result.pipe";
 import {ScrollPanelModule} from "primeng/scrollpanel";
+import {ConfirmationService, MenuItem, MessageService} from "primeng/api";
+
 registerLocaleData(localeFr, 'fr');
 @NgModule({
   declarations: [
@@ -31,6 +33,8 @@ registerLocaleData(localeFr, 'fr');
   providers: [
     TargetsService,
     ResultPipe,
+    ConfirmationService,
+    MessageService,
     provideAnimations(),
     {provide: LOCALE_ID, useValue: 'fr' }
   ],

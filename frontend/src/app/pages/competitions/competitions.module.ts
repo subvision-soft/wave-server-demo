@@ -14,11 +14,14 @@ import {PanelModule} from "primeng/panel";
 import {InputTextModule} from "primeng/inputtext";
 import {CalendarModule} from "primeng/calendar";
 import {ResultPipe} from "../../pipes/result.pipe";
+import {ConfirmDialogModule} from "primeng/confirmdialog";
+import {ToastModule} from "primeng/toast";
 
 
 
 @NgModule({
   declarations: [CompetitionsComponent,CompetitionComponent],
+
   imports: [
     CommonModule,
     CompetitionsRoutingModule,
@@ -38,7 +41,9 @@ import {ResultPipe} from "../../pipes/result.pipe";
     PanelModule,
     InputTextModule,
     CalendarModule,
-    ResultPipe
+    ResultPipe,
+    ConfirmDialogModule,
+    ToastModule
   ]
 })
 export class CompetitionsModule { }
