@@ -9,22 +9,16 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ResultServiceTest {
 
-    class MockID {
-        private long id = 0;
-
-        public long getId() {
-            return id++;
-        }
-    }
-
     private final MockID mockID = new MockID();
-
     private final IResultService resultService = new ResultService();
 
     public Set<ImpactEntity> get3ValidImpacts() {
@@ -48,7 +42,7 @@ class ResultServiceTest {
                         getValidImpact(Zone.TOP_RIGHT),
                         getValidImpact(Zone.BOTTOM_LEFT),
                         getValidImpact(Zone.BOTTOM_RIGHT),
-                        getValidImpact(Zone.CENTER,570)
+                        getValidImpact(Zone.CENTER, 570)
                 ));
     }
 
@@ -68,12 +62,12 @@ class ResultServiceTest {
     public Set<ImpactEntity> get5ValidImpacts() {
         return new HashSet<>(
                 Arrays.asList(
-                getValidImpact(Zone.TOP_LEFT),
-                getValidImpact(Zone.TOP_RIGHT),
-                getValidImpact(Zone.BOTTOM_LEFT),
-                getValidImpact(Zone.BOTTOM_RIGHT, 0),
-                getValidImpact(Zone.CENTER)
-        ));
+                        getValidImpact(Zone.TOP_LEFT),
+                        getValidImpact(Zone.TOP_RIGHT),
+                        getValidImpact(Zone.BOTTOM_LEFT),
+                        getValidImpact(Zone.BOTTOM_RIGHT, 0),
+                        getValidImpact(Zone.CENTER)
+                ));
     }
 
     @Test
@@ -137,7 +131,6 @@ class ResultServiceTest {
         assertEquals(score, resultService.getResult(target));
     }
 
-
     @Test
     void biathlon_multiple_impacts_same_zone() {
         TargetEntity target = TargetEntity.builder()
@@ -191,5 +184,105 @@ class ResultServiceTest {
         target.getImpacts().add(getValidImpact(Zone.OFF_TARGET));
         assertEquals(4239, resultService.getResult(target));
     }
+
+    @Test
+    void precision_10_impacts_but_3_in_one_zone() {
+        TargetEntity target = TargetEntity.builder()
+                .event(Event.PRECISION)
+                .build();
+        List<ImpactEntity> impacts = get10ValidImpacts().stream().collect(Collectors.toList());
+        impacts.add(getValidImpact(Zone.TOP_LEFT, 570));
+
+
+        impacts.remove(impacts.stream().filter((impact) -> impact.getZone() == Zone.TOP_RIGHT).findFirst().get());
+        target.setImpacts(new HashSet<>(impacts));
+
+        assertEquals(4437, resultService.getResult(target));
+    }
+
+    @Test
+    void precision_11_impacts_but_3_in_one_zone() {
+        TargetEntity target = TargetEntity.builder()
+                .event(Event.PRECISION)
+                .build();
+        List<ImpactEntity> impacts = get10ValidImpacts().stream().collect(Collectors.toList());
+        impacts.add(getValidImpact(Zone.TOP_LEFT, 570));
+        target.setImpacts(new HashSet<>(impacts));
+        assertEquals(4809, resultService.getResult(target));
+    }
+
+    @Test
+    void super_biathlon_one_off_target() {
+        TargetEntity target = TargetEntity.builder()
+                .event(Event.SUPER_BIATHLON)
+                .impacts(new HashSet<>())
+                .build();
+        List<ImpactEntity> impacts = get5ValidImpacts().stream().collect(Collectors.toList());
+        impacts.removeFirst();
+        target.setImpacts(new HashSet<>(impacts));
+        target.getImpacts().add(getValidImpact(Zone.OFF_TARGET));
+        assertEquals(0, resultService.getResult(target));
+    }
+
+    @Test
+    void super_biathlon_5_impacts_but_same_zone() {
+        TargetEntity target = TargetEntity.builder()
+                .event(Event.SUPER_BIATHLON)
+                .build();
+        List<ImpactEntity> impacts = get3ValidImpacts().stream().collect(Collectors.toList());
+        impacts.add(getValidImpact(Zone.BOTTOM_RIGHT, 570));
+        impacts.add(getValidImpact(Zone.TOP_LEFT, 570));
+        target.setImpacts(new HashSet<>(impacts));
+        assertEquals(0, resultService.getResult(target));
+    }
+
+    @Test
+    void super_biathlon_more_than_5_impacts() {
+        TargetEntity target = TargetEntity.builder()
+                .event(Event.SUPER_BIATHLON)
+                .impacts(get10ValidImpacts())
+                .build();
+        assertEquals(0, resultService.getResult(target));
+        target.setImpacts(get5ValidImpacts());
+        assertTrue(resultService.getResult(target) > 0);
+    }
+
+
+    @Test
+    void super_biathlon_not_enough_valid_impacts() {
+        TargetEntity target = TargetEntity.builder()
+                .event(Event.SUPER_BIATHLON)
+                .impacts(new HashSet<>(
+                        Arrays.asList(
+                                getValidImpact(Zone.TOP_LEFT,468),
+                                getValidImpact(Zone.TOP_RIGHT,468),
+                                getValidImpact(Zone.BOTTOM_LEFT,468),
+                                getValidImpact(Zone.BOTTOM_RIGHT,468),
+                                getValidImpact(Zone.CENTER,471)
+                        ))
+                )
+                .build();
+        assertEquals(0, resultService.getResult(target));
+        target.setImpacts(
+                new HashSet<>(
+                        Arrays.asList(
+                                getValidImpact(Zone.TOP_LEFT,468),
+                                getValidImpact(Zone.TOP_RIGHT,468),
+                                getValidImpact(Zone.BOTTOM_LEFT,471),
+                                getValidImpact(Zone.BOTTOM_RIGHT,471),
+                                getValidImpact(Zone.CENTER,471)
+                        ))
+        );
+        assertTrue( resultService.getResult(target)>0);
+    }
+
+    class MockID {
+        private long id = 0;
+
+        public long getId() {
+            return id++;
+        }
+    }
+
 
 }

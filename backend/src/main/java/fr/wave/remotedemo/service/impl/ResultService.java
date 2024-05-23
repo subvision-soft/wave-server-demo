@@ -56,12 +56,14 @@ public class ResultService implements IResultService {
                     //check the impact with highest score is in the same visual
                     List<ImpactEntity> impactsCopy = new ArrayList<>(impacts);
                     for (ImpactEntity impact : impactsCopy) {
-                        if (impactsByZone.get(impact.getZone()).size() > maximumImpactsPerZone && numberToRemove > 0) {
-                            impacts.removeFirst();
-                            impactsByZone.get(impact.getZone()).removeFirst();
+                        List<ImpactEntity> impactEntities = impactsByZone.get(impact.getZone());
+                        if (impactEntities.size() > maximumImpactsPerZone && numberToRemove > 0) {
+                            impactEntities.removeFirst();
                             numberToRemove--;
                         }
                     }
+                    impacts = new ArrayList<>();
+                    impactsByZone.values().forEach(impacts::addAll);
                 } else {
                     impacts.removeFirst();
                     numberToRemove--;
