@@ -14,8 +14,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ResultService implements IResultService {
-    private final static int SUPER_BIATHLON_BASE_TIME_PENALTY = 5;
-    private final static int SUPER_NUMBER_OF_IMPACTS = 5;
 
     public int getResult(TargetEntity target) {
         Event event = target.getEvent();
@@ -235,7 +233,7 @@ public class ResultService implements IResultService {
                         target.getTargetSheetNotTouchedCount() +
                         (target.isDepartureSteal() ? 1 : 0) +
                         (target.isArmedBeforeCountdown() ? 1 : 0)
-        ) * SUPER_BIATHLON_BASE_TIME_PENALTY;
+        ) * SuperBiathlonParameters.BASE_TIME_PENALTY;
     }
 
     private boolean has1ImpactMaxPerZone(TargetEntity target) {
