@@ -15,10 +15,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ResultServiceTest {
 
+    class MockID {
+        private long id = 0;
+
+        public long getId() {
+            return id++;
+        }
+    }
+
+    private final MockID mockID = new MockID();
 
     private final IResultService resultService = new ResultService();
 
-    public static Set<ImpactEntity> get3ValidImpacts() {
+    public Set<ImpactEntity> get3ValidImpacts() {
         return new HashSet<>(
                 Arrays.asList(getValidImpact(Zone.TOP_LEFT),
                         getValidImpact(Zone.TOP_RIGHT),
@@ -27,21 +36,36 @@ class ResultServiceTest {
         );
     }
 
-    public static ImpactEntity getValidImpact(Zone zone) {
-        return ImpactEntity.builder()
-                .zone(zone)
-                .score(471)
-                .build();
+    public Set<ImpactEntity> get10ValidImpacts() {
+        return new HashSet<>(
+                Arrays.asList(
+                        getValidImpact(Zone.TOP_LEFT),
+                        getValidImpact(Zone.TOP_RIGHT),
+                        getValidImpact(Zone.BOTTOM_LEFT),
+                        getValidImpact(Zone.BOTTOM_RIGHT),
+                        getValidImpact(Zone.CENTER),
+                        getValidImpact(Zone.TOP_LEFT),
+                        getValidImpact(Zone.TOP_RIGHT),
+                        getValidImpact(Zone.BOTTOM_LEFT),
+                        getValidImpact(Zone.BOTTOM_RIGHT),
+                        getValidImpact(Zone.CENTER,570)
+                ));
     }
 
-    public static ImpactEntity getValidImpact(Zone zone, int score) {
+    public ImpactEntity getValidImpact(Zone zone) {
+        return getValidImpact(zone, 471);
+    }
+
+    public ImpactEntity getValidImpact(Zone zone, int score) {
+        mockID.getId();
         return ImpactEntity.builder()
+                .id(this.mockID.getId())
                 .zone(zone)
                 .score(score)
                 .build();
     }
 
-    public static Set<ImpactEntity> get5ValidImpacts() {
+    public Set<ImpactEntity> get5ValidImpacts() {
         return new HashSet<>(
                 Arrays.asList(
                 getValidImpact(Zone.TOP_LEFT),
@@ -156,6 +180,16 @@ class ResultServiceTest {
                 .impacts(Set.of())
                 .build();
         assertEquals(0, resultService.getResult(target));
+    }
+
+    @Test
+    void precision_more_than_10_impacts() {
+        TargetEntity target = TargetEntity.builder()
+                .event(Event.PRECISION)
+                .impacts(get10ValidImpacts())
+                .build();
+        target.getImpacts().add(getValidImpact(Zone.OFF_TARGET));
+        assertEquals(4239, resultService.getResult(target));
     }
 
 }

@@ -28,79 +28,35 @@ public class ResultService implements IResultService {
         Map<Zone, List<ImpactEntity>> impactMap = new HashMap<>();
 
         // Calculer le score initial en prenant les 10 meilleurs impacts
-        List<ImpactEntity> impacts = new java.util.ArrayList<>(target.getImpacts());
-        impacts.sort((a, b) -> b.getScore() - a.getScore());
-        for (ImpactEntity impact : impacts) {
-            if (impactCount >= 10) {
-                break;
-            }
-            score += impact.getScore();
-            impactCount++;
-
-            // Grouper les impacts par visuel pour la règle des 2 meilleurs impacts par visuel
-            if (!impactMap.containsKey(impact.getZone())) {
-                impactMap.put(impact.getZone(), new java.util.ArrayList<>());
-            }
-            impactMap.get(impact.getZone()).add(impact);
-        }
-
-        // Appliquer la règle des 2 meilleurs impacts par visuel
-//        for (const impacts of impactMap.values()) {
-//            if (impacts.length > 2) {
-//        const excessScore = impacts.slice(2).reduce((sum, impact) => sum + impact.score, 0);
-//                score -= excessScore;
-//            }
-//        }
-        for (List<ImpactEntity> impactsList : impactMap.values()) {
-            if (impactsList.size() > 2) {
-                int excessScore = 0;
-                for (int i = 2; i < impactsList.size(); i++) {
-                    excessScore += impactsList.get(i).getScore();
-                }
-                score -= excessScore;
-            }
-        }
-
-
-        // Appliquer les pénalités
-        if (target.isTimeRanOut()) {
-            ImpactEntity worstImpact = impacts.get(impacts.size() - 1);
-            score -= worstImpact.getScore();
-        }
-        if (impacts.size() > 10) {
-            int excessScore = 0;
-            for (int i = 10; i < impacts.size(); i++) {
-                excessScore += impacts.get(i).getScore();
-            }
-            score -= excessScore;
-        }
+        List<ImpactEntity> impacts = getValidImpacts(new ArrayList<>(target.getImpacts()), target.getTime(), 600000, 10, 2);
+        score = impacts.stream().mapToInt(ImpactEntity::getScore).sum();
         score -= 50 * (target.getShotsTooCloseCount() + target.getBadArrowExtractionsCount() + target.getTargetSheetNotTouchedCount() + (target.isDepartureSteal() ? 1 : 0) + (target.isArmedBeforeCountdown() ? 1 : 0));
         return Math.max(0, score); // Pas de score négatif
     }
 
 
-    int calculateScoreBiathlon(TargetEntity target) {
-        List<ImpactEntity> impacts = new ArrayList<>(target.getImpacts());
+    List<ImpactEntity> getValidImpacts(List<ImpactEntity> impacts,int time,int maxTime,int maximumShots,int maximumImpactsPerZone) {
+        impacts = new ArrayList<>(impacts);
         impacts.sort((a, b) -> b.getScore() - a.getScore());
         // En cas de dépassement du temps, le plus mauvais tir sera refusé.
-        if (target.getTime() > 600000) {
+        if (time > maxTime) {
             System.out.println("Temps dépassé");
-            impacts.remove(impacts.size() - 1);
+            impacts.removeLast();
         }
 
         // Si plus de 3 impacts sont relevés sur le plastron, le score sera amputé du ou des meilleurs impacts
         // supplémentaires.
         // Si plus de 3 tirs (déclenchements) sont comptabilisés, le score sera amputé du ou des meilleurs
         // impacts supplémentaires.
-        if (impacts.size() > 3) {
+        if (impacts.size() > maximumShots) {
             HashMap<Zone, List<ImpactEntity>> impactsByZone = this.getImpactsByZone(impacts);
-            int numberToRemove = impacts.size() - 3;
+            int numberToRemove = impacts.size() - maximumShots;
             while (numberToRemove > 0) {
-                if (this.hasImpactOnSameVisual(impactsByZone)) {
+                if (this.hasMoreThanNImpactInZone(impactsByZone,maximumImpactsPerZone)) {
                     //check the impact with highest score is in the same visual
                     List<ImpactEntity> impactsCopy = new ArrayList<>(impacts);
                     for (ImpactEntity impact : impactsCopy) {
-                        if (impactsByZone.get(impact.getZone()).size() > 1 && numberToRemove > 0) {
+                        if (impactsByZone.get(impact.getZone()).size() > maximumImpactsPerZone && numberToRemove > 0) {
                             impacts.removeFirst();
                             impactsByZone.get(impact.getZone()).removeFirst();
                             numberToRemove--;
@@ -115,9 +71,9 @@ public class ResultService implements IResultService {
 
         //Si plus de 1 impact est relevé sur le même visuel, seul le meilleur impact sera retenu.
         HashMap<Zone, List<ImpactEntity>> impactsByZone = this.getImpactsByZone(impacts);
-        while (this.hasImpactOnSameVisual(impactsByZone)) {
+        while (this.hasMoreThanNImpactInZone(impactsByZone,maximumImpactsPerZone)) {
             impactsByZone.values().forEach((impactsList) -> {
-                while (impactsList.size() > 1) {
+                while (impactsList.size() > maximumImpactsPerZone) {
                     impactsList.removeLast();
                 }
             });
@@ -125,7 +81,12 @@ public class ResultService implements IResultService {
         impacts = new ArrayList<>();
 
         impactsByZone.values().forEach(impacts::addAll);
+        return impacts;
+    }
 
+
+    int calculateScoreBiathlon(TargetEntity target) {
+        List<ImpactEntity> impacts = this.getValidImpacts(new ArrayList<>(target.getImpacts()), target.getTime(), 600000, 5, 1);
 
         //Calculer le score
         int score = impacts.stream().mapToInt(ImpactEntity::getScore).sum();
@@ -261,8 +222,8 @@ public class ResultService implements IResultService {
     }
 
 
-    private boolean hasImpactOnSameVisual(HashMap<Zone, List<ImpactEntity>> impactsByZone) {
+    private boolean hasMoreThanNImpactInZone(HashMap<Zone, List<ImpactEntity>> impactsByZone,int maxImpactsInZone) {
         impactsByZone.put(Zone.OFF_TARGET, new ArrayList<>());
-        return impactsByZone.values().stream().anyMatch((zone) -> zone.stream().filter((impact) -> impact.getScore() > 0).count() > 1);
+        return impactsByZone.values().stream().anyMatch((zone) -> zone.stream().filter((impact) -> impact.getScore() > 0).count() > maxImpactsInZone);
     }
 }
