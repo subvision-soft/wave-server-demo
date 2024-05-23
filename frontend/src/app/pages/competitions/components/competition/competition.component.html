@@ -1,9 +1,14 @@
 <p-toast/>
 <p-confirmDialog />
-<qr-code *ngIf="qrcode" [value]="qrcode"></qr-code>
+<p-dialog [modal]="true" [(visible)]="showQrCode">
+  <qr-code *ngIf="qrcode" [value]="qrcode"></qr-code>
+</p-dialog>
+<div class="header">
 
+  <p-button  icon="pi pi-qrcode" (click)="showQrCode = true" ></p-button><span><p-inputSwitch [(ngModel)]="showLastInput"></p-inputSwitch> Afficher la dernière saisie</span>
+</div>
 
-
+<app-target  *ngIf="lastTarget && showLastInput" [target]="lastTarget"></app-target>
 
 <div class="competitors">
   <div class="all">
@@ -49,7 +54,12 @@
 <!--        <td>{{target | result}}</td>-->
 <!--        <td>{{target.competitorId}}</td>-->
         <td *ngFor="let col of cols">
-          {{ target[col.field] }}
+          <ng-container *ngIf="col.field !== 'competitorId'">
+            {{ target[col.field] }}
+          </ng-container>
+          <ng-container *ngIf="col.field === 'competitorId'">
+            {{ target.competitorId | name | async }}
+          </ng-container>
         </td>
         <td>
           <p-button severity="danger"  [text]="true" [rounded]="true" icon="pi pi-trash" (click)="deleteTarget(target)"></p-button>

@@ -25,6 +25,10 @@ public class CompetitorResource {
         return competitorRepository.findAll().stream().map(CompetitorTransformer::toDto).toList();
     }
 
+    @GetMapping("/{id}")
+    public CompetitorDTO getCompetitor(@PathVariable Long id) {
+        return CompetitorTransformer.toDto(competitorRepository.findById(String.valueOf(id)).orElse(null));
+    }
     @PostMapping()
     public CompetitorDTO createCompetitor(@RequestBody CompetitorEntity competitor) {
         return CompetitorTransformer.toDto(competitorRepository.save(competitor))  ;

@@ -11,6 +11,7 @@ import {Client} from '@stomp/stompjs';
 import {EventEnum} from "../../../../models/event.enum";
 import {ResultPipe} from "../../../../pipes/result.pipe";
 import {ConfirmationService, MessageService} from "primeng/api";
+
 interface Column {
   field: string;
   header: string;
@@ -29,16 +30,45 @@ interface ExportColumn {
 })
 export class CompetitionComponent {
 
+  lastTarget: TargetModel;
+
+  get targets(): TargetModel[] {
+    return this._targets;
+  }
+
+  set targets(value: TargetModel[]) {
+    this._targets = value;
+    this.lastTarget = value[0];
+    this.targetsByEvent = [];
+    let events = this._targets.reduce((acc:{
+      [key: string]: TargetModel[]
+    }, target) => {
+      if (!acc[target.event]) {
+        acc[target.event] = [];
+      }
+      acc[target.event].push(target);
+      return acc;
+    }, {});
+
+    Object.entries(events).forEach(([key, value]) => {
+      events[key] = value.sort((a, b) =>b.totalScore - a.totalScore);
+      this.targetsByEvent.push({
+        event: key as EventEnum,
+        targets: value
+      });
+    });
+  }
+
   competition: CompetitionModel;
 
   competitors: CompetitorModel[];
 
-  targets: TargetModel[];
+  private _targets: TargetModel[];
 
 
   cols: Column[] = [
     { field: 'competitorId', header: 'Compétiteur' },
-    { field: 'total', header: 'Score' },
+    { field: 'totalScore', header: 'Score' },
   ];
   exportColumns: ExportColumn[] = this.cols.map((col) => {
     return {
@@ -89,7 +119,8 @@ export class CompetitionComponent {
     this.stompClient.onConnect= (frame) => {
       console.log('connected', frame);
       this.stompClient.subscribe(`/competitions/${id}/targets/update`, (message) => {
-        this.loadTargets()
+        const data = JSON.parse(message.body);
+        this.loadTarget(data);
       });
     }
 
@@ -104,33 +135,27 @@ export class CompetitionComponent {
     this.stompClient.activate();
   }
 
+  loadTarget(id:number) {
+    this.competitionsService.getTarget(this.competition.id, id).then((data) => {
+      if (this.targets.find((target) => target.id === id)) {
+        this.targets = this.targets.map((target) => {
+          if (target.id === id) {
+            return data;
+          }
+          return target;
+        });
+      } else {
+        this.targets = [...this.targets, data];
+      }
+      this.lastTarget = data;
+    });
+  }
 
   loadTargets() {
     this.competitionsService.getTargets(this.competition.id).then((data) => {
       this.targets = [...data];
-      this.targets.map((target) => {
-        target.total = this.resultPipe.transform(target);
-        return target;
-      }
-      );
-      this.targetsByEvent = [];
-      let events = this.targets.reduce((acc:{
-        [key: string]: TargetModel[]
-      }, target) => {
-        if (!acc[target.event]) {
-          acc[target.event] = [];
-        }
-        acc[target.event].push(target);
-        return acc;
-      }, {});
 
-      Object.entries(events).forEach(([key, value]) => {
-        events[key] = value.sort((a, b) =>b.total - a.total);
-        this.targetsByEvent.push({
-          event: key as EventEnum,
-          targets: value
-        });
-      });
+
     });
   }
 
@@ -191,4 +216,7 @@ export class CompetitionComponent {
     });
   }
 
+  protected readonly Paths = Paths;
+  showQrCode: boolean = false;
+  showLastInput: boolean = false;
 }

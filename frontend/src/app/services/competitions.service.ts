@@ -63,6 +63,10 @@ export class CompetitionsService {
     return callFetch<TargetModel[]>(`${Paths.API_ENDPOINT}/competitions/${competitionId}/targets`);
   }
 
+  getTarget(competitionId: number, targetId: number): Promise<TargetModel>{
+    return callFetch<TargetModel>(`${Paths.API_ENDPOINT}/competitions/${competitionId}/targets/${targetId}`);
+  }
+
   deleteTarget(targetId: number, competitionId: number) {
     return callFetch(`${Paths.API_ENDPOINT}/competitions/${competitionId}/targets/${targetId}`, {
       method: 'DELETE'

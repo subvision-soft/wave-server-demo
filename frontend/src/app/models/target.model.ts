@@ -7,7 +7,7 @@ export interface TargetModel {
   competitionId: number;
   impacts: ImpactModel[];
   event: EventEnum;
-  total: number;
+  totalScore: number;
   time: number;
   date: Date;
   competitorId: number;

@@ -1,6 +1,7 @@
 import {Injectable} from "@angular/core";
 import {CompetitorModel} from "../models/competitor.model";
 import {Paths} from "../statics/Paths";
+import {callFetch} from "../statics/Fetch";
 
 @Injectable({
   providedIn: 'root'
@@ -25,8 +26,8 @@ export class CompetitorsService {
     })
   }
 
-  get(id:number) {
-    return fetch(`${Paths.API_ENDPOINT}/competitors/${id}`)
+  get(id:number) : Promise<CompetitorModel> {
+    return callFetch<CompetitorModel>(`${Paths.API_ENDPOINT}/competitors/${id}`)
   }
 
   delete(id:number) {

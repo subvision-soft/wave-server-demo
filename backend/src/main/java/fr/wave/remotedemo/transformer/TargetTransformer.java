@@ -23,6 +23,7 @@ public class TargetTransformer {
                 .departureSteal(entity.isDepartureSteal())
                 .armedBeforeCountdown(entity.isArmedBeforeCountdown())
                 .timeRanOut(entity.isTimeRanOut())
+                .totalScore(entity.getTotalScore())
                 .build();
     }
 
@@ -41,7 +42,7 @@ public class TargetTransformer {
                 .departureSteal(dto.isDepartureSteal())
                 .armedBeforeCountdown(dto.isArmedBeforeCountdown())
                 .timeRanOut(dto.isTimeRanOut())
-
+                .totalScore(dto.getTotalScore())
                 .build();
     }
     public static TargetEntity toEntity(UploadTargetDTO dto, String pictureId) {

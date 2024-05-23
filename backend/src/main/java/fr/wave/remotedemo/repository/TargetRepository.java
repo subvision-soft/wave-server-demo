@@ -11,4 +11,6 @@ public interface TargetRepository extends JpaRepository<TargetEntity, String> {
     List<TargetEntity> findByCompetitionId (Long competitionId);
 
     TargetEntity findByCompetitionIdAndCompetitorId(Long competitionId, Long competitorId);
+
+
 }

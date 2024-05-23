@@ -24,6 +24,7 @@ public class TargetDTO {
     private Long id;
 
     private String pictureId;
+    private int totalScore;
 
     private int shotsTooCloseCount;
     private int badArrowExtractionsCount;

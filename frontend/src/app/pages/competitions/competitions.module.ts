@@ -16,6 +16,10 @@ import {CalendarModule} from "primeng/calendar";
 import {ResultPipe} from "../../pipes/result.pipe";
 import {ConfirmDialogModule} from "primeng/confirmdialog";
 import {ToastModule} from "primeng/toast";
+import {DialogModule} from "primeng/dialog";
+import {RadioButtonModule} from "primeng/radiobutton";
+import {InputSwitchModule} from "primeng/inputswitch";
+import {NamePipe} from "../../pipes/name.pipe";
 
 
 
@@ -43,7 +47,11 @@ import {ToastModule} from "primeng/toast";
     CalendarModule,
     ResultPipe,
     ConfirmDialogModule,
-    ToastModule
+    ToastModule,
+    DialogModule,
+    RadioButtonModule,
+    InputSwitchModule,
+    NamePipe
   ]
 })
 export class CompetitionsModule { }

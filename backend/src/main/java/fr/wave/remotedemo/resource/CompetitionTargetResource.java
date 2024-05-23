@@ -21,10 +21,7 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 
@@ -45,6 +42,11 @@ public class CompetitionTargetResource {
     @GetMapping()
     public List<TargetEntity> getTargets(@PathVariable Long competitionId) {
         return targetRepository.findByCompetitionId(competitionId);
+    }
+
+    @GetMapping("/{id}")
+    public TargetEntity getTarget(@PathVariable Long id) {
+        return targetRepository.findById(id.toString()).orElse(null);
     }
 
     @PostMapping
@@ -77,13 +79,9 @@ public class CompetitionTargetResource {
         List<ImpactEntity> impactsEntities = target.getImpacts().stream().map(ImpactTransformer::toEntity).peek(impactEntity -> impactEntity.setTargetId(save.getId())).collect(Collectors.toList());
         impactRepository.saveAll(impactsEntities);
 
-        Optional<TargetEntity> byId = targetRepository.findById(String.valueOf(save.getId()));
-        if (byId.isPresent()) {
-            TargetEntity targetEntity1 = byId.get();
-            targetEntity1.setTotalScore(resultService.getResult(targetEntity1));
-            targetRepository.save(targetEntity1);
-        }
-
+        save.setImpacts(new HashSet<>(impactsEntities));
+        save.setTotalScore(resultService.getResult(save));
+        targetRepository.save(save);
         wsService.sendUpdateTargets(competitionId.toString(), save);
         return save;
     }

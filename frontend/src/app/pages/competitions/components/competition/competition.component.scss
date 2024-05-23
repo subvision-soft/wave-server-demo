@@ -12,6 +12,16 @@
 
 
 }
+.header {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  span {
+    display:flex;
+    align-items: center;
+  }
+}
 .picture-preview {
   width: 100px;
   height: 100px;
