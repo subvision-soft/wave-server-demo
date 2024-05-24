@@ -4,16 +4,18 @@ package fr.wave.remotedemo.entity;
 import fr.wave.remotedemo.enums.Category;
 import fr.wave.remotedemo.enums.Sex;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Set;
 
 
+@Builder
 @Entity
 @Setter
 @Getter
 @Table(name = "competitors")
+@NoArgsConstructor
+@AllArgsConstructor
 public class CompetitorEntity {
 
     private String firstName;

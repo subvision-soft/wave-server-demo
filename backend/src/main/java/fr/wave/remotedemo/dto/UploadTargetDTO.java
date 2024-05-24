@@ -1,6 +1,7 @@
 package fr.wave.remotedemo.dto;
 
 import fr.wave.remotedemo.enums.Event;
+import fr.wave.remotedemo.enums.Stage;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,9 +20,11 @@ public class UploadTargetDTO {
 
     private Long competitionId;
 
-    private Long userId;
+    private Long competitorId;
 
     private Long id;
+
+    private Stage stage;
 
     private String pictureBase64;
 

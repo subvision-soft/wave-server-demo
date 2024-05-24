@@ -1,5 +1,6 @@
 package fr.wave.remotedemo.resource;
 
+import fr.wave.remotedemo.entity.CompetitorEntity;
 import fr.wave.remotedemo.entity.TargetEntity;
 import fr.wave.remotedemo.repository.TargetRepository;
 import fr.wave.remotedemo.utils.EndpointsUtils;
@@ -21,7 +22,11 @@ public class UserTargetResource {
     @PostMapping()
     public TargetEntity createUserTarget(@RequestBody TargetEntity target, @PathVariable Long competitorId, @PathVariable Long competitionId) {
         target.setCompetitionId(competitionId);
-        target.setCompetitorId(competitorId);
+        target.setCompetitor(
+                CompetitorEntity.builder()
+                        .id(competitorId)
+                        .build()
+        );
         return targetRepository.save(target);
     }
 }

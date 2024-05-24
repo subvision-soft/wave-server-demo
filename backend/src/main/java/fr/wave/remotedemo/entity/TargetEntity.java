@@ -1,6 +1,7 @@
 package fr.wave.remotedemo.entity;
 
 import fr.wave.remotedemo.enums.Event;
+import fr.wave.remotedemo.enums.Stage;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,7 +22,10 @@ public class TargetEntity {
 
     private Long competitionId;
 
-    private Long competitorId;
+    @OneToOne
+    private CompetitorEntity competitor;
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -34,6 +38,7 @@ public class TargetEntity {
     private String pictureId;
 
     private Event event;
+    private Stage stage;
 
     private int totalScore;
 

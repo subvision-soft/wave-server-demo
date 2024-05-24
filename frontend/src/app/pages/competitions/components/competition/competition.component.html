@@ -58,7 +58,7 @@
             {{ target[col.field] }}
           </ng-container>
           <ng-container *ngIf="col.field === 'competitorId'">
-            {{ target.competitorId | name | async }}
+            {{ target.competitor.id | name | async }}
           </ng-container>
         </td>
         <td>

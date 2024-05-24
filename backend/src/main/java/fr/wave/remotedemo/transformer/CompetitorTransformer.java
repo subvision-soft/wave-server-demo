@@ -10,6 +10,7 @@ public class CompetitorTransformer {
                 .id(competitor.getId())
                 .firstName(competitor.getFirstName())
                 .lastName(competitor.getLastName())
+                .sex(competitor.getSex())
                 .category(competitor.getCategory()).build();
     }
 

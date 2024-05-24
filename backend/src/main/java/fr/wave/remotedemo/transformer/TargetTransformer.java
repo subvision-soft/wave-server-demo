@@ -2,6 +2,7 @@ package fr.wave.remotedemo.transformer;
 
 import fr.wave.remotedemo.dto.TargetDTO;
 import fr.wave.remotedemo.dto.UploadTargetDTO;
+import fr.wave.remotedemo.entity.CompetitorEntity;
 import fr.wave.remotedemo.entity.TargetEntity;
 
 import java.util.stream.Collectors;
@@ -9,12 +10,15 @@ import java.util.stream.Collectors;
 public class TargetTransformer {
 
     public static TargetDTO toDTO(TargetEntity entity) {
+        if (entity == null) {
+            return null;
+        }
         return TargetDTO.builder()
                 .id(entity.getId())
                 .competitionId(entity.getCompetitionId())
                 .date(entity.getDate())
                 .time(entity.getTime())
-                .userId(entity.getCompetitorId())
+                .competitor(CompetitorTransformer.toDto(entity.getCompetitor()))
                 .pictureId(entity.getPictureId())
                 .event(entity.getEvent())
                 .targetSheetNotTouchedCount(entity.getTargetSheetNotTouchedCount())
@@ -24,6 +28,7 @@ public class TargetTransformer {
                 .armedBeforeCountdown(entity.isArmedBeforeCountdown())
                 .timeRanOut(entity.isTimeRanOut())
                 .totalScore(entity.getTotalScore())
+                .stage(entity.getStage())
                 .build();
     }
 
@@ -33,7 +38,7 @@ public class TargetTransformer {
                 .competitionId(dto.getCompetitionId())
                 .date(dto.getDate())
                 .time(dto.getTime())
-                .competitorId(dto.getUserId())
+                .competitor(CompetitorEntity.builder().id(dto.getCompetitor().getId()).build())
                 .pictureId(dto.getPictureId())
                 .event(dto.getEvent())
                 .shotsTooCloseCount(dto.getShotsTooCloseCount())
@@ -43,6 +48,7 @@ public class TargetTransformer {
                 .armedBeforeCountdown(dto.isArmedBeforeCountdown())
                 .timeRanOut(dto.isTimeRanOut())
                 .totalScore(dto.getTotalScore())
+                .stage(dto.getStage())
                 .build();
     }
     public static TargetEntity toEntity(UploadTargetDTO dto, String pictureId) {
@@ -51,7 +57,7 @@ public class TargetTransformer {
                 .competitionId(dto.getCompetitionId())
                 .date(dto.getDate())
                 .time(dto.getTime())
-                .competitorId(dto.getUserId())
+                .competitor(CompetitorEntity.builder().id(dto.getCompetitorId()).build())
                 .pictureId(pictureId)
                 .impacts(dto.getImpacts().stream().map(ImpactTransformer::toEntity).collect(Collectors.toSet()))
                 .event(dto.getEvent())
@@ -61,6 +67,7 @@ public class TargetTransformer {
                 .departureSteal(dto.isDepartureSteal())
                 .armedBeforeCountdown(dto.isArmedBeforeCountdown())
                 .timeRanOut(dto.isTimeRanOut())
+                .stage(dto.getStage())
                 .build();
     }
 }

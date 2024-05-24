@@ -8,7 +8,9 @@ public class EndpointsUtils {
     public static final String COMPETITORS = "/competitors";
 
     public static final String COMPETITIONS_CATEGORIES = COMPETITIONS + "/{competitionId}/categories";
+    public static final String COMPETITIONS_STAGES = COMPETITIONS + "/{competitionId}/stages";
     public static final String COMPETITIONS_EVENTS = COMPETITIONS + "/{competitionId}/events";
     public static final String CATEGORIES = "/categories";
+    public static final String STAGES = "/stages";
     public static final String EVENTS = "/events";
 }

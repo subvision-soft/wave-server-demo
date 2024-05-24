@@ -1,5 +1,7 @@
 import {EventEnum} from "./event.enum";
 import {ImpactModel} from "./impact.model";
+import {CompetitorModel} from "./competitor.model";
+import {StageEnum} from "./stage.enum";
 
 export interface TargetModel {
   id: number;
@@ -10,7 +12,8 @@ export interface TargetModel {
   totalScore: number;
   time: number;
   date: Date;
-  competitorId: number;
+  competitor: CompetitorModel;
+  stage:StageEnum;
   user: string;
   image: string;
   shotsTooCloseCount: number;

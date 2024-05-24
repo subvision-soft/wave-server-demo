@@ -1,20 +1,44 @@
-
+<p-toast></p-toast>
 <form (ngSubmit)="onSubmit()" [formGroup]="competitorForm">
-<app-competitor-table [competitors]="competitors" ></app-competitor-table>
-  <tr>
-    <td><input [required]="true" type="text" name="id" formControlName="id" placeholder="Id"></td>
-    <td><input [required]="true" type="text" name="firstName" formControlName="firstName" placeholder="Prénom"></td>
-    <td><input [required]="true" type="text" name="lastName" formControlName="lastName" placeholder="Nom"></td>
-    <td>
-      <select formControlName="category" required>
-        <option value="MASTER">Master</option>
-        <option value="SENIOR">Senior</option>
-        <option value="JUNIOR">Junior</option>
-        <option value="CADET">Cadet</option>
-        <option value="MINIME">Minime</option>
+    <input pInputText [required]="true" type="text" name="id" formControlName="id" placeholder="Id">
+    <input pInputText [required]="true" type="text" name="firstName" formControlName="firstName" placeholder="Prénom">
+    <input pInputText [required]="true" type="text" name="lastName" formControlName="lastName" placeholder="Nom">
+    <p-dropdown  [optionLabel]="'name'" [optionValue]="'code'" [options]="[
+      {name: 'Master', code: 'MASTER'},
+      {name: 'Senior', code: 'SENIOR'},
+      {name: 'Junior', code: 'JUNIOR'},
+      {name: 'Cadet', code: 'CADET'},
+      {name: 'Minime', code: 'MINIME'},
+    ]" formControlName="category" required>
+
+    </p-dropdown>
+
+      <select formControlName="sex" required>
+        <option value="MALE">Masculin</option>
+        <option value="FEMALE">Féminin</option>
       </select>
-    <td>
       <button type="submit"><ng-icon [svg]="jamPlus"></ng-icon></button>
-    </td>
-  </tr>
 </form>
+
+
+<p-table   [value]="competitors" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5,10,20]">
+  <ng-template pTemplate="header">
+    <tr>
+      <th>#</th>
+      <th>Compétiteur</th>
+      <th>Catégorie</th>
+      <th></th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-competitor>
+    <tr>
+      <td>{{ competitor.id }}</td>
+      <td>{{ competitor.firstName }} {{ competitor.lastName }}</td>
+      <td>{{competitor.category}} ({{competitor.sex === "MALE" ? "M" : "F"}})</td>
+      <td [style.display]="'flex'" [style.justify-content]="'end'">
+        <p-button [text]="true" [rounded]="true" icon="pi pi-eye" (click)="openCompetitor(competitor.id)"></p-button>
+        <p-button severity="danger"  [text]="true" [rounded]="true" icon="pi pi-trash" (click)="deleteCompetitor(competitor.id)"></p-button>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

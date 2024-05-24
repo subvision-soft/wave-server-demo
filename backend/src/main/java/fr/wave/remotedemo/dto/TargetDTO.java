@@ -1,7 +1,7 @@
 package fr.wave.remotedemo.dto;
 
 import fr.wave.remotedemo.enums.Event;
-import jakarta.persistence.Id;
+import fr.wave.remotedemo.enums.Stage;
 import lombok.Builder;
 import lombok.Data;
 
@@ -15,11 +15,12 @@ public class TargetDTO {
 
     private Long competitionId;
 
-    private Long userId;
+    private CompetitorDTO competitor;
 
     private Long teamId;
 
     private Event event;
+    private Stage stage;
 
     private Long id;
 

@@ -1,7 +1,9 @@
 package fr.wave.remotedemo.resource;
 
 import fr.wave.remotedemo.dto.FileDTO;
+import fr.wave.remotedemo.dto.TargetDTO;
 import fr.wave.remotedemo.dto.UploadTargetDTO;
+import fr.wave.remotedemo.entity.CompetitorEntity;
 import fr.wave.remotedemo.entity.FileEntity;
 import fr.wave.remotedemo.entity.ImpactEntity;
 import fr.wave.remotedemo.entity.TargetEntity;
@@ -10,14 +12,11 @@ import fr.wave.remotedemo.repository.ImpactRepository;
 import fr.wave.remotedemo.repository.TargetRepository;
 import fr.wave.remotedemo.service.IResultService;
 import fr.wave.remotedemo.service.IWSService;
-import fr.wave.remotedemo.service.impl.ResultService;
 import fr.wave.remotedemo.transformer.FileTransformer;
 import fr.wave.remotedemo.transformer.ImpactTransformer;
+import fr.wave.remotedemo.transformer.TargetTransformer;
 import fr.wave.remotedemo.utils.EndpointsUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -40,17 +39,17 @@ public class CompetitionTargetResource {
     HashMap<Long, SseEmitter> sseMap = new HashMap<>();
 
     @GetMapping()
-    public List<TargetEntity> getTargets(@PathVariable Long competitionId) {
-        return targetRepository.findByCompetitionId(competitionId);
+    public List<TargetDTO> getTargets(@PathVariable Long competitionId) {
+        return  targetRepository.findByCompetitionId(competitionId).stream().map(TargetTransformer::toDTO).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
-    public TargetEntity getTarget(@PathVariable Long id) {
-        return targetRepository.findById(id.toString()).orElse(null);
+    public TargetDTO getTarget(@PathVariable Long id) {
+        return TargetTransformer.toDTO(targetRepository.findById(id.toString()).orElse(null));
     }
 
     @PostMapping
-    public TargetEntity addTarget(@RequestBody UploadTargetDTO target, @PathVariable Long competitionId) {
+    public TargetDTO addTarget(@RequestBody UploadTargetDTO target, @PathVariable Long competitionId) {
         String base64 = target.getPictureBase64();
         base64 = base64.replace("data:image/jpeg;base64,", "");
         byte[] bytes = java.util.Base64.getDecoder().decode(base64);
@@ -65,7 +64,7 @@ public class CompetitionTargetResource {
                 .time(target.getTime())
                 .date(target.getDate())
                 .competitionId(competitionId)
-                .competitorId(target.getUserId())
+                .competitor(CompetitorEntity.builder().id(target.getCompetitorId()).build())
                 .pictureId(file.getId())
                 .event(target.getEvent())
                 .shotsTooCloseCount(target.getShotsTooCloseCount())
@@ -83,7 +82,7 @@ public class CompetitionTargetResource {
         save.setTotalScore(resultService.getResult(save));
         targetRepository.save(save);
         wsService.sendUpdateTargets(competitionId.toString(), save);
-        return save;
+        return TargetTransformer.toDTO(save);
     }
 
     private void sendSse(Long competitionId, TargetEntity target) {

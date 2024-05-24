@@ -3,7 +3,10 @@ package fr.wave.remotedemo.resource;
 import fr.wave.remotedemo.dto.CompetitorDTO;
 import fr.wave.remotedemo.entity.CompetitionEntity;
 import fr.wave.remotedemo.entity.CompetitorEntity;
+import fr.wave.remotedemo.enums.Event;
+import fr.wave.remotedemo.enums.Stage;
 import fr.wave.remotedemo.repository.CompetitionRepository;
+import fr.wave.remotedemo.repository.TargetRepository;
 import fr.wave.remotedemo.repository.UserRepository;
 import fr.wave.remotedemo.transformer.CompetitionTransformer;
 import fr.wave.remotedemo.transformer.CompetitorTransformer;
@@ -14,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin
@@ -22,6 +26,7 @@ import java.util.List;
 public class CompetitionCompetitorResource {
     private final UserRepository userRepository;
     private final CompetitionRepository competitionRepository;
+    private final TargetRepository targetRepository;
 
 
     @PostMapping()
@@ -45,9 +50,17 @@ public class CompetitionCompetitorResource {
 
 
     @GetMapping()
-    public List<CompetitorDTO> getUsers(@PathVariable String competitionId) {
+    public List<CompetitorDTO> getUsers(@PathVariable String competitionId, @RequestParam(required = false)Stage stage, @RequestParam(required = false)Event event) {
         CompetitionEntity competition = competitionRepository.findById(competitionId).orElse(null);
-        return competition.getCompetitors().stream().map(CompetitorTransformer::toDto).toList();
+        List<CompetitorDTO> competitors = competition.getCompetitors().stream().map(CompetitorTransformer::toDto).collect(Collectors.toList());
+        if (event != null) {
+            List<CompetitorDTO> competitorsWithRegisteredTargets = targetRepository.findByCompetitionId(Long.valueOf(competitionId)).stream()
+                    .filter(target -> target.getEvent().equals(event) && (stage == null || target.getStage().equals(stage)))
+                    .map(target -> CompetitorTransformer.toDto(target.getCompetitor()))
+                    .collect(Collectors.toList());
+            competitors.removeAll(competitorsWithRegisteredTargets);
+        }
+        return competitors;
     }
 
     @DeleteMapping("/{id}")
