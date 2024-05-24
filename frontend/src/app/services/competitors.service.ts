@@ -12,8 +12,8 @@ export class CompetitorsService {
   constructor() {
   }
 
-  getAll():Promise<Response> {
-    return fetch(`${Paths.API_ENDPOINT}/competitors`)
+  getAll():Promise<CompetitorModel[]> {
+    return callFetch<CompetitorModel[]>(`${Paths.API_ENDPOINT}/competitors`)
   }
 
   create(data:CompetitorModel) {

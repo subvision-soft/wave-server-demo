@@ -41,8 +41,8 @@ export class UsersComponent {
   }
 
   loadCompetitors() {
-    this.competitorsService.getAll().then(response => response.json()).then(data => {
-      this.competitors = data;
+    this.competitorsService.getAll().then(data => {
+      this.competitors = data.sort((a, b) => a.id - b.id);
     });
 
   }

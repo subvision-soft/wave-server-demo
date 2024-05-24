@@ -1,5 +1,5 @@
 <p-toast></p-toast>
-<form (ngSubmit)="onSubmit()" [formGroup]="competitorForm">
+<form class="flex-row flex gap-1" (ngSubmit)="onSubmit()" [formGroup]="competitorForm">
     <input pInputText [required]="true" type="text" name="id" formControlName="id" placeholder="Id">
     <input pInputText [required]="true" type="text" name="firstName" formControlName="firstName" placeholder="Prénom">
     <input pInputText [required]="true" type="text" name="lastName" formControlName="lastName" placeholder="Nom">
@@ -12,12 +12,20 @@
     ]" formControlName="category" required>
 
     </p-dropdown>
+  <p-dropdown formControlName="sex"  [optionLabel]="'name'" [optionValue]="'code'" [options]="[
+  {
+    name: 'Masculin',
+    code: 'MALE'
+  },
+  {
+    name: 'Féminin',
+    code: 'FEMALE'}
+  ]">
 
-      <select formControlName="sex" required>
-        <option value="MALE">Masculin</option>
-        <option value="FEMALE">Féminin</option>
-      </select>
-      <button type="submit"><ng-icon [svg]="jamPlus"></ng-icon></button>
+  </p-dropdown>
+
+
+  <p-button  icon="pi pi-plus" type="submit"></p-button>
 </form>
 
 

@@ -181,11 +181,9 @@ export class CompetitionComponent {
   }
 
   loadCompetitors() {
-    this.competitorsService.getAll().then((res) => {
-      res.json().then((data) => {
-        this.competitors = data;
+    this.competitorsService.getAll().then((data) => {
+        this.competitors = data.sort((a, b) => a.id - b.id);
       });
-    });
     this.competitionsService.getCompetitors(this.competition.id).then((data) => {
       this.subscribedCompetitors = data;
     });
