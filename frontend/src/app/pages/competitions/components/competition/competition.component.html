@@ -5,7 +5,10 @@
 </p-dialog>
 <div class="header">
 
-  <p-button  icon="pi pi-qrcode" (click)="showQrCode = true" ></p-button><span><p-inputSwitch [(ngModel)]="showLastInput"></p-inputSwitch> Afficher la dernière saisie</span>
+  <p-button label="Resultats" icon="pi pi-list" (click)="showResults()" ></p-button>
+  <p-button  icon="pi pi-qrcode" (click)="showQrCode = true" ></p-button>
+  <span><p-inputSwitch [(ngModel)]="showLastInput"></p-inputSwitch> Afficher la dernière saisie</span>
+
 </div>
 
 <app-target  *ngIf="lastTarget && showLastInput" [target]="lastTarget"></app-target>

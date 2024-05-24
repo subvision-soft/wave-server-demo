@@ -73,6 +73,7 @@ public class CompetitionTargetResource {
                 .departureSteal(target.isDepartureSteal())
                 .armedBeforeCountdown(target.isArmedBeforeCountdown())
                 .timeRanOut(target.isTimeRanOut())
+                .stage(target.getStage())
                 .build();
         TargetEntity save = targetRepository.save(targetEntity);
         List<ImpactEntity> impactsEntities = target.getImpacts().stream().map(ImpactTransformer::toEntity).peek(impactEntity -> impactEntity.setTargetId(save.getId())).collect(Collectors.toList());

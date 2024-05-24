@@ -1,0 +1,34 @@
+<div *ngFor="let result  of results | keyvalue">
+<h2>{{result.key}} </h2>
+  <div *ngFor="let target of result.value | keyvalue">
+      <p-table [value]="target.value" #dt [columns]="cols">
+        <ng-template pTemplate="caption">
+          <div style="text-align: left">
+            {{target.key}}
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th [style.width]="'50px'">#</th>
+            <th [style.min-width]="'300px'" *ngFor="let col of cols">{{col.header}}</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-target let-rowIndex="rowIndex" >
+          <tr style="height:46px">
+            <td>{{rowIndex + 1}}</td>
+            <!--        <td>{{target | result}}</td>-->
+            <!--        <td>{{target.competitorId}}</td>-->
+            <td *ngFor="let col of cols">
+              <ng-container *ngIf="col.field !== 'competitorId'">
+                {{ target[col.field] }}
+              </ng-container>
+              <ng-container *ngIf="col.field === 'competitorId'">
+                {{ target.competitor.id | name | async }}
+              </ng-container>
+            </td>
+
+          </tr>
+        </ng-template>
+      </p-table>
+  </div>
+</div>

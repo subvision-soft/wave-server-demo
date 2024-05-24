@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {CompetitionsService} from "../../../../services/competitions.service";
 import {CompetitionModel} from "../../../../models/competition.model";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {CompetitorModel} from "../../../../models/competitor.model";
 import {CompetitorsService} from "../../../../services/competitors.service";
 import {jamMinus, jamPlus} from '@ng-icons/jam-icons';
@@ -98,6 +98,7 @@ export class CompetitionComponent {
     private route: ActivatedRoute,
     private competitorsService: CompetitorsService,
     private resultPipe: ResultPipe,
+    private router: Router,
     private confirmationService: ConfirmationService, private messageService: MessageService
   ) {
     const id = this.route.snapshot.paramMap.get('id');
@@ -154,8 +155,6 @@ export class CompetitionComponent {
   loadTargets() {
     this.competitionsService.getTargets(this.competition.id).then((data) => {
       this.targets = [...data];
-
-
     });
   }
 
@@ -219,4 +218,8 @@ export class CompetitionComponent {
   protected readonly Paths = Paths;
   showQrCode: boolean = false;
   showLastInput: boolean = false;
+
+  showResults() {
+    this.router.navigate([Paths.RESULTS, this.competition.id]);
+  }
 }
