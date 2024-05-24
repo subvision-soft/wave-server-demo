@@ -22,6 +22,7 @@
     "@ng-icons/jam-icons": "^27.2.0",
     "@ngx-translate/core": "^15.0.0",
     "@stomp/stompjs": "^7.0.0",
+    "jspdf": "^2.5.1",
     "ng-qrcode": "^17.0.0",
     "ngx-wave-ui": "C:\\Users\\Paul\\WebstormProjects\\wave-ui\\projects\\ngx-wave-ui",
     "primeflex": "^3.3.1",
